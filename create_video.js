@@ -687,6 +687,8 @@ function playPreview() {
       script_approval: scriptApproved,
     }),
   };
+  
+  settings.url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio';
 
   if (scriptApproved === false) {
     if (previewDisabled == false) {
@@ -697,9 +699,8 @@ function playPreview() {
       );
       $("#aboveScript").css(redBorderCss);
       $("#video-script").css(redBorderCss);
-      settings.url =
-        "https://speech2vid-api.nw.r.appspot.com/audio/record_preview";
-
+      settings.url = "https://speech2vid-api.nw.r.appspot.com/audio/record_preview";
+      
       $.ajax(settings).done(function (response) {
         console.log(response);
       });
@@ -722,7 +723,7 @@ function playPreview() {
       previewPaused = false;
       $.ajax(settings).done(function (response) {
         console.log(response);
-        _previewAudio = new Audio(response);
+        _previewAudio = new Audio(response.signed_url);
         _previewAudio.play().then((_) => {
           _previewAudio
             .addEventListener("ended", function () {
