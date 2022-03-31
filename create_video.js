@@ -668,6 +668,11 @@ function previewListen() {
 }
 
 function playPreview() {
+  if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
+    console.log(fV);
+    return;
+  }
+  
   console.log("in playpreview");
   var settings = {
     url: "https://speech2vid-api.nw.r.appspot.com/audio/preview",
@@ -677,6 +682,7 @@ function playPreview() {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
+      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
     },
     data: JSON.stringify({
       voice: fV.voice,
