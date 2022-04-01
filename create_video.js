@@ -23,6 +23,7 @@ var defaultBackground = "url(https://assets-global.website-files.com/603a1632f3d
 var VL = {};
 var backgroundClass = " ";
 var newClass;
+var selectedActorGender = 'actor-male'
 var fV = {
   actor: "Alex",
   actorPositionType: "full-body",
@@ -212,9 +213,11 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 
   actorGender = $(this);
   if (actorGender.hasClass('actor-female')) {
+    selectedActorGener = 'actor-female';
     cleanUpVoiceSelectionBasedOnActorGender('actor-female');
   };
   if (actorGender.hasClass('actor-male')) {
+    selectedActorGener = 'actor-male';
     cleanUpVoiceSelectionBasedOnActorGender('actor-male');
   };
 
@@ -230,10 +233,14 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
   if (fV.actorPositionType == "circle") {
     $(".preview-circle-img-wrap").children().children("img").attr("src", fV.previewImgSrc);
   }
-
 });
 
-// class="preview-bg form-tab-bg c5"
+
+//----------- LANGUAGE selection -----------
+$(".cv-lang-radio").on("click", function () {
+  console.log("dtest1");
+  cleanUpVoiceSelectionBasedOnActorGender(selectedActorGener);
+});
 
 // ------------------------------------------------- SELECT BACKGROUND -------------------------------------------------
 function previewCustomUpload() {
@@ -312,21 +319,36 @@ async function isEmailVerified(id) {
       console.log("Error while getting data to integromat: ");
       console.error(error);
   }
+}
 
+function reSendEmailVerification() {
+  let result;
+  var data = {
+    user_id: fV.id
+  }
+  console.log("user id: " + fV.id)
+  try {
+      result = $.ajax({
+          url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
+          type: 'POST',
+          data: data
+      });
+      console.log("Verification email resent");
+      return result;
+  } catch (error) {
+      console.log("Error while re-sending verification email");
+      console.error(error);
+  }
 }
 
 async function InitializeIsUserVerified() {
   const response = await isEmailVerified(fV.id);
   const is_email_verified_json = JSON.parse(response);
-  
   if (!is_email_verified_json.is_email_verified) {
     $(".form-create-button-denied-wrap").css("display", "block");
     $(".popup-email-verify-wrap").css("display", "block");
     $(".form-listen-denied-wrap").css("display", "block");
-    //$(".form-listen-wrap").css("display", "none");
-    //$("#account-verify-link").attr("href", "http://www.google.com/");
   }
-
 }
 
 function startUpSelection() {
@@ -336,7 +358,6 @@ function startUpSelection() {
   InitializeIsUserVerified()
 }
 setTimeout(startUpSelection, 1000);
-
 
 // ------------------------------------------------- SELECT VOICE (this part is not refactored yet) -------------------------------------------------
 function checkListenPreview() {
