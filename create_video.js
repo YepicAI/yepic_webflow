@@ -213,11 +213,11 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 
   actorGender = $(this);
   if (actorGender.hasClass('actor-female')) {
-    selectedActorGener = 'actor-female';
+    selectedActorGender = 'actor-female';
     cleanUpVoiceSelectionBasedOnActorGender('actor-female');
   };
   if (actorGender.hasClass('actor-male')) {
-    selectedActorGener = 'actor-male';
+    selectedActorGender = 'actor-male';
     cleanUpVoiceSelectionBasedOnActorGender('actor-male');
   };
 
@@ -239,7 +239,7 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 //----------- LANGUAGE selection -----------
 $(".cv-lang-radio").on("click", function () {
   console.log("dtest1");
-  cleanUpVoiceSelectionBasedOnActorGender(selectedActorGener);
+  cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
 });
 
 // ------------------------------------------------- SELECT BACKGROUND -------------------------------------------------
