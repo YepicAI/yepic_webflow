@@ -344,7 +344,7 @@ function reSendEmailVerification() {
   }
 }
 
-$(".popup-email-button w-button").on("click", function () {
+$(".popup-email-verify-buttons").on("click", function () {
   reSendEmailVerification();
 });
 
