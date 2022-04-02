@@ -344,6 +344,11 @@ function reSendEmailVerification() {
   }
 }
 
+$(".popup-email-button w-button").on("click", function () {
+  reSendEmailVerification();
+});
+
+
 async function InitializeIsUserVerified() {
   const response = await isEmailVerified(fV.id);
   const is_email_verified_json = JSON.parse(response);
