@@ -132,7 +132,6 @@ $("#tab-title-circle").click(function () {
   $(".preview-circle-img-wrap").children().children("img").attr("src", fV.previewImgSrc);
   $(".preview-img-wrap").hide();
   $(".preview-circle-img-wrap").show();
-  console.log("2");
   fV.actorType = "circle";
   fV.position = actorTypePositionSelection.circle;
 });
@@ -238,7 +237,6 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 
 //----------- LANGUAGE selection -----------
 $(".cv-lang-radio").on("click", function () {
-  console.log("dtest2");
   setTimeout(function(){
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
 }, 800);
