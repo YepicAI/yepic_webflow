@@ -238,8 +238,11 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 
 //----------- LANGUAGE selection -----------
 $(".cv-lang-radio").on("click", function () {
-  console.log("dtest1");
-  cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
+  console.log("dtest2");
+  setTimeout(function(){
+    cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
+}, 800);
+  
 });
 
 // ------------------------------------------------- SELECT BACKGROUND -------------------------------------------------
