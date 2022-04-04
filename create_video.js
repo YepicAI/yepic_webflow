@@ -476,6 +476,23 @@ async function start_move_background_to_private_cloud_function(image_name) {
 }
 
 // ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
+var previewPaused = true;
+var _previewAudio;
+var scriptApproved = 0;
+
+function previewAbuseCheckToggle() {
+  if (scriptApproved === false) {
+    $("#aboveScript").text(
+      "Your script violates our Terms & Conditions. Content of discriminatory, sexual, hateful, criminal or political nature will not be generated."
+    );
+    $("#aboveScript").css(redBorderCss);
+  } else if (scriptApproved === true) {
+    $("#aboveScript").text(
+      "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
+    );
+    $("#aboveScript").css({ borderColor: "transparent" });
+  }
+}
 
 function previewListen() {
   fV.script = $("#video-script").val();
@@ -759,25 +776,6 @@ $(".size-range").on("change", ".size-range", function () {
     String($("#size").val()) + "%"
   );
 });
-
-var previewPaused = true;
-var _previewAudio;
-
-var scriptApproved = 0;
-
-function previewAbuseCheckToggle() {
-  if (scriptApproved === false) {
-    $("#aboveScript").text(
-      "Your script violates our Terms & Conditions. Content of discriminatory, sexual, hateful, criminal or political nature will not be generated."
-    );
-    $("#aboveScript").css(redBorderCss);
-  } else if (scriptApproved === true) {
-    $("#aboveScript").text(
-      "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
-    );
-    $("#aboveScript").css({ borderColor: "transparent" });
-  }
-}
 
 async function uploadAudio() {
   var fileName = uuid() + ff[0].name.split(".").pop();
