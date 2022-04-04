@@ -365,7 +365,209 @@ function startUpSelection() {
 }
 setTimeout(startUpSelection, 1000);
 
-// ------------------------------------------------- SELECT VOICE (this part is not refactored yet) -------------------------------------------------
+// ---------------------------------------------------- IMAGE UPLOAD ------------------------------------------------------------------
+
+var imageFileName;
+var imageFile;
+var req;
+const fileSelect = document.getElementById("fileSelect"),
+  fileElem = document.getElementById("fileElem"),
+  fileList = document.getElementById("fileList");
+fileSelect.addEventListener(
+  "click",
+  function (e) {
+    if (fileElem) {
+      fileElem.click();
+    }
+    e.preventDefault();
+  },
+  false
+);
+fileElem.addEventListener("change", handleFiles, false);
+
+function handleFiles() {
+  if (!this.files.length) {
+    fileList.innerHTML = "<p>No files selected!</p>";
+  } else {
+    $("#uploadedImg").show();
+    $("#deleteBackground").show();
+    const img = document.getElementById("uploadedImg");
+    img.style.display = "";
+    imageFile = this.files[0];
+    imageFileName = this.files[1];
+    img.src = URL.createObjectURL(this.files[0]);
+    const customImage = document.getElementById("customBackground");
+    customImage.style.display = "inline-grid";
+    img.style.display = "inline-grid";
+    img.style.width = "120px";
+    img.style.height = "96px";
+    img.onload = function () {
+      URL.revokeObjectURL(this.src);
+      fV.background = "custom";
+      $(".form-tab-bg-wrap").css({ borderColor: "transparent" });
+      $("#customBackground").css(borderCss);
+
+      uploadImage();
+      if (fV.link == 0) {
+        setTimeout(previewCustomUpload, 1000);
+      } else {
+        previewCustomUpload();
+      }
+    };
+  }
+}
+
+function uuid() {
+  return (
+    "file-" +
+    "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx.".replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    })
+  );
+}
+
+async function uploadImage() {
+  var fileName = uuid() + imageFile.name.split(".").pop();
+  $.ajax({
+    url:
+      "https://storage.googleapis.com/upload/storage/v1/b/yepicai-backend.appspot.com/o?uploadType=media&name=" +
+      fileName,
+    type: "POST",
+    data: imageFile,
+    processData: false,
+    headers: {
+      "Content-Type": imageFile.type,
+    },
+    success: function (data) {
+      fV.uploadFilename = fileName;
+      fV.link = data.mediaLink;
+      start_move_background_to_private_cloud_function(fileName);
+      console.log("Moving to another bucket finished");
+    },
+    error: function () {
+      alert("Something went wrong, try again!");
+    },
+  });
+}
+
+async function start_move_background_to_private_cloud_function(image_name) {
+  let result;
+  console.log("Moving to another bucket started" + image_name);
+  try {
+      result = await $.ajax({
+          url: "https://europe-west2-yepicai-backend.cloudfunctions.net/public_to_private",
+          type: 'POST',
+          crossDomain: true,
+          data: JSON.stringify({"blob_name" : image_name}),
+          contentType: "application/json",
+          dataType: "json",
+          headers: {
+            'Access-Control-Allow-Origin': ['https://yepic-ai-new.webflow.io', 'https://www.yepic.ai'],
+          }
+      });
+      console.log("Data successfully received: ");
+      return result;
+  } catch (error) {
+      console.log("Error while executing script: ");
+      console.error(error);
+  }
+}
+
+// ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
+
+function previewListen() {
+  fV.script = $("#video-script").val();
+  scriptApproved = true;
+  playPreview();  
+}
+
+function playPreview() {
+  if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
+    console.log(fV);
+    return;
+  }
+  
+  console.log("in playpreview");
+  var settings = {
+    url: "https://speech2vid-api.nw.r.appspot.com/audio/preview",
+    method: "POST",
+    crossDomain: true,
+    timeout: 0,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
+    },
+    data: JSON.stringify({
+      voice: fV.voice,
+      script: fV.script,
+      name: fV.name,
+      email: fV.email,
+      memberstack_id: fV.id,
+      script_approval: scriptApproved,
+    }),
+  };
+  
+  settings.url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio';
+
+  if (scriptApproved === false) {
+    if (previewDisabled == false) {
+      console.log("PlayPreview FALSE");
+
+      $("#aboveScript").text(
+        "Your script violates our Terms & Conditions. Content of discriminatory, sexual, hateful, criminal or political nature will not be generated."
+      );
+      $("#aboveScript").css(redBorderCss);
+      $("#video-script").css(redBorderCss);
+      settings.url = "https://speech2vid-api.nw.r.appspot.com/audio/record_preview";
+      
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+    }
+  } else if (scriptApproved === true) {
+    console.log("PlayPreview TRUE");
+    $("#aboveScript").text(
+      "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
+    );
+    $("#aboveScript").css({ borderColor: "transparent" });
+    $("#video-script").css({ borderColor: "#bccce5" });
+
+    if (!previewPaused) {
+      _previewAudio.pause();
+
+      previewPaused = true;
+      $("#previewIcon").removeClass("pause-icon").toggleClass("play-icon");
+    } else {
+      $("#previewIcon").removeClass("play-icon").toggleClass("pause-icon");
+      previewPaused = false;
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+        _previewAudio = new Audio(response.signed_url);
+        _previewAudio.play().then((_) => {
+          _previewAudio
+            .addEventListener("ended", function () {
+              previewPaused = true;
+              $("#previewIcon")
+                .removeClass("pause-icon")
+                .toggleClass("play-icon");
+            })
+            .catch((error) => {
+              console.log("Error Occured!");
+            });
+        });
+      });
+    }
+  } else {
+    console.log("Preview Listen is disabled");
+  }
+}
+
+
+
+// ------------------------------------------------- NOT refactored part: -------------------------------------------------
 function checkListenPreview() {
   if (scriptLengthOk && fV.voice != 0) {
     previewDisabled = false;
@@ -517,115 +719,6 @@ function textCounter(field, field2, maxlimit) {
   }
 }
 
-// IMAGE UPLOAD
-var imageFileName;
-var imageFile;
-var req;
-const fileSelect = document.getElementById("fileSelect"),
-  fileElem = document.getElementById("fileElem"),
-  fileList = document.getElementById("fileList");
-fileSelect.addEventListener(
-  "click",
-  function (e) {
-    if (fileElem) {
-      fileElem.click();
-    }
-    e.preventDefault();
-  },
-  false
-);
-fileElem.addEventListener("change", handleFiles, false);
-
-function handleFiles() {
-  if (!this.files.length) {
-    fileList.innerHTML = "<p>No files selected!</p>";
-  } else {
-    $("#uploadedImg").show();
-    $("#deleteBackground").show();
-    const img = document.getElementById("uploadedImg");
-    img.style.display = "";
-    imageFile = this.files[0];
-    imageFileName = this.files[1];
-    img.src = URL.createObjectURL(this.files[0]);
-    const customImage = document.getElementById("customBackground");
-    customImage.style.display = "inline-grid";
-    img.style.display = "inline-grid";
-    img.style.width = "120px";
-    img.style.height = "96px";
-    img.onload = function () {
-      URL.revokeObjectURL(this.src);
-      fV.background = "custom";
-      $(".form-tab-bg-wrap").css({ borderColor: "transparent" });
-      $("#customBackground").css(borderCss);
-
-      uploadImage();
-      if (fV.link == 0) {
-        setTimeout(previewCustomUpload, 1000);
-      } else {
-        previewCustomUpload();
-      }
-    };
-  }
-}
-
-function uuid() {
-  return (
-    "file-" +
-    "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx.".replace(/[xy]/g, function (c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    })
-  );
-}
-
-async function uploadImage() {
-  var fileName = uuid() + imageFile.name.split(".").pop();
-  $.ajax({
-    url:
-      "https://storage.googleapis.com/upload/storage/v1/b/yepicai-backend.appspot.com/o?uploadType=media&name=" +
-      fileName,
-    type: "POST",
-    data: imageFile,
-    processData: false,
-    headers: {
-      "Content-Type": imageFile.type,
-    },
-    success: function (data) {
-      fV.uploadFilename = fileName;
-      fV.link = data.mediaLink;
-      start_move_background_to_private_cloud_function(fileName);
-      console.log("Moving to another bucket finished");
-    },
-    error: function () {
-      alert("Something went wrong, try again!");
-    },
-  });
-}
-
-async function start_move_background_to_private_cloud_function(image_name) {
-  let result;
-  console.log("Moving to another bucket started" + image_name);
-  try {
-      result = await $.ajax({
-          url: "https://europe-west2-yepicai-backend.cloudfunctions.net/public_to_private",
-          type: 'POST',
-          crossDomain: true,
-          data: JSON.stringify({"blob_name" : image_name}),
-          contentType: "application/json",
-          dataType: "json",
-          headers: {
-            'Access-Control-Allow-Origin': ['https://yepic-ai-new.webflow.io', 'https://www.yepic.ai'],
-          }
-      });
-      console.log("Data successfully received: ");
-      return result;
-  } catch (error) {
-      console.log("Error while executing script: ");
-      console.error(error);
-  }
-}
-
 var playerPaused = true;
 $(".form-tab-voice-wrap").on(
   "click",
@@ -654,9 +747,6 @@ $(".form-tab-voice-wrap").on(
               formVoiceIcon.css("background-image", playSymbol);
               playerPaused = true;
             })
-            .catch((error) => {
-              console.log("Error Occured!");
-            });
         });
       }
     }
@@ -686,94 +776,6 @@ function previewAbuseCheckToggle() {
       "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
     );
     $("#aboveScript").css({ borderColor: "transparent" });
-  }
-}
-
-function previewListen() {
-  fV.script = $("#video-script").val();
-  scriptApproved = true;
-  playPreview();  
-}
-
-function playPreview() {
-  if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
-    console.log(fV);
-    return;
-  }
-  
-  console.log("in playpreview");
-  var settings = {
-    url: "https://speech2vid-api.nw.r.appspot.com/audio/preview",
-    method: "POST",
-    crossDomain: true,
-    timeout: 0,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
-    },
-    data: JSON.stringify({
-      voice: fV.voice,
-      script: fV.script,
-      name: fV.name,
-      email: fV.email,
-      memberstack_id: fV.id,
-      script_approval: scriptApproved,
-    }),
-  };
-  
-  settings.url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio';
-
-  if (scriptApproved === false) {
-    if (previewDisabled == false) {
-      console.log("PlayPreview FALSE");
-
-      $("#aboveScript").text(
-        "Your script violates our Terms & Conditions. Content of discriminatory, sexual, hateful, criminal or political nature will not be generated."
-      );
-      $("#aboveScript").css(redBorderCss);
-      $("#video-script").css(redBorderCss);
-      settings.url = "https://speech2vid-api.nw.r.appspot.com/audio/record_preview";
-      
-      $.ajax(settings).done(function (response) {
-        console.log(response);
-      });
-    }
-  } else if (scriptApproved === true) {
-    console.log("PlayPreview TRUE");
-    $("#aboveScript").text(
-      "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
-    );
-    $("#aboveScript").css({ borderColor: "transparent" });
-    $("#video-script").css({ borderColor: "#bccce5" });
-
-    if (!previewPaused) {
-      _previewAudio.pause();
-
-      previewPaused = true;
-      $("#previewIcon").removeClass("pause-icon").toggleClass("play-icon");
-    } else {
-      $("#previewIcon").removeClass("play-icon").toggleClass("pause-icon");
-      previewPaused = false;
-      $.ajax(settings).done(function (response) {
-        console.log(response);
-        _previewAudio = new Audio(response.signed_url);
-        _previewAudio.play().then((_) => {
-          _previewAudio
-            .addEventListener("ended", function () {
-              previewPaused = true;
-              $("#previewIcon")
-                .removeClass("pause-icon")
-                .toggleClass("play-icon");
-            })
-            .catch((error) => {
-              console.log("Error Occured!");
-            });
-        });
-      });
-    }
-  } else {
-    console.log("Preview Listen is disabled");
   }
 }
 
