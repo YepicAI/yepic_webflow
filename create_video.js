@@ -540,7 +540,7 @@ function loadListenPreview() {
     });
 }
 
-$("#previewPlayBtnOFF").on("click", function () {
+$("#previewPlayBtn").on("click", function () {
   fV.script = $("#video-script").val();
   if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
     console.log("Missing parameter, so do nothing.")
@@ -584,9 +584,9 @@ function previewAbuseCheckToggle() {
 
 function previewListen() {
   console.log("This doesnt do anything, its from webflow.")
-  fV.script = $("#video-script").val();
-  scriptApproved = true;
-  playPreview();  
+  //fV.script = $("#video-script").val();
+  //scriptApproved = true;
+  //playPreview();  
 }
 
 function playPreview() {
