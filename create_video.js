@@ -507,7 +507,7 @@ function setListenButtonState(state){
 function loadListenPreview() {
   console.log("Sending call to generate and play listen preview");
   var settings = {
-    url: "https://speech2vid-api.nw.r.appspot.com/audio/preview",
+    url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
     method: "POST",
     crossDomain: true,
     timeout: 0,
