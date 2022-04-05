@@ -540,6 +540,7 @@ function loadListenPreview() {
 }
 
 $("#previewPlayBtn").on("click", function () {
+  fV.script = $("#video-script").val();
   if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
     console.log("Missing parameter, so do nothing.")
     console.log(fV);
