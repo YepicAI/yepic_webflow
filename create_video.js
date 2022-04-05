@@ -239,8 +239,13 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 $(".cv-lang-radio").on("click", function () {
   setTimeout(function(){
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
-}, 800);
-  
+  }, 100);
+  setTimeout(function(){
+    cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
+  }, 800);
+  setTimeout(function(){
+    cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
+  }, 1200);
 });
 
 // ------------------------------------------------- SELECT BACKGROUND -------------------------------------------------
@@ -476,6 +481,87 @@ async function start_move_background_to_private_cloud_function(image_name) {
 }
 
 // ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
+var audioElement = document.createElement('audio');
+setListenButtonState("stopped");
+
+
+$("#previewIcon").removeClass("pause-icon").toggleClass("play-icon");
+
+
+function setListenButtonState(state){
+  if (state == "stopped") {
+    console.log("stopped state");
+    listenButtonStatus = "stopped";
+    $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("pause-icon");
+  } else if (state == "loading") {
+    console.log("loading state");
+    listenButtonStatus = "loading";
+    $("#previewIcon").removeClass("play-icon").removeClass("pause-icon").addClass("loading-icon")
+  } else if (state == "playing") {
+    console.log("playing state");
+    listenButtonStatus = "playing";
+    $("#previewIcon").removeClass("pause-icon").removeClass("loading-icon").addClass("play-icon")
+  }
+}
+
+function loadListenPreview() {
+  console.log("Sending call to generate and play listen preview");
+  var settings = {
+    url: "https://speech2vid-api.nw.r.appspot.com/audio/preview",
+    method: "POST",
+    crossDomain: true,
+    timeout: 0,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
+    },
+    data: JSON.stringify({
+      voice: fV.voice,
+      script: fV.script,
+      name: fV.name,
+      email: fV.email,
+      memberstack_id: fV.id,
+      script_approval: scriptApproved,
+    }),
+  };
+  console.log("Ajax call: ");
+  $.ajax(settings).done(function (response) {
+    console.log("Ajax call response and url: ")
+    console.log(response);
+    console.log(response.signed_url);
+
+    audioElement.setAttribute('src', 'response.signed_url');
+    audioElement.addEventListener("canplay",function(){
+      console.log("entered canplay, so play it")
+      audioElement.play();
+    });
+    });
+}
+
+$("#previewPlayBtn").on("click", function () {
+  if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
+    console.log("Missing parameter, so do nothing.")
+    console.log(fV);
+    return;
+  }
+  if (listenButtonStatus == "stopped") {
+    console.log("Was in a stopped state so start loading: ")
+    setListenButtonState("loading");
+    loadListenPreview();
+  }
+  if (listenButtonStatus == "loading") {
+    console.log("Was in a loading state, so do nothing: ")
+  } 
+  if (listenButtonStatus == "playing") {
+    console.log("Was in a playing state, so stop it: ")
+    setListenButtonState("stopped");
+    audioElement.pause();
+    audioElement.currentTime = 0;
+  }
+});
+
+
 var previewPaused = true;
 var _previewAudio;
 var scriptApproved = 0;
@@ -495,9 +581,10 @@ function previewAbuseCheckToggle() {
 }
 
 function previewListen() {
-  fV.script = $("#video-script").val();
-  scriptApproved = true;
-  playPreview();  
+  console.log("This doesnt do anything, its from webflow.")
+  //fV.script = $("#video-script").val();
+  //scriptApproved = true;
+  //playPreview();  
 }
 
 function playPreview() {
