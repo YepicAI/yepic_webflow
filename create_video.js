@@ -488,7 +488,7 @@ function setListenButtonState(state){
   if (state == "stopped") {
     console.log("stopped state");
     listenButtonStatus = "stopped";
-    $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("pause-icon");
+    $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("play-icon");
   } else if (state == "loading") {
     console.log("loading state");
     listenButtonStatus = "loading";
@@ -496,7 +496,7 @@ function setListenButtonState(state){
   } else if (state == "playing") {
     console.log("playing state");
     listenButtonStatus = "playing";
-    $("#previewIcon").removeClass("pause-icon").removeClass("loading-icon").addClass("play-icon")
+    $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("pause-icon")
   }
 }
 
