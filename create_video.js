@@ -484,10 +484,6 @@ async function start_move_background_to_private_cloud_function(image_name) {
 var audioElement = document.createElement('audio');
 setListenButtonState("stopped");
 
-
-$("#previewIcon").removeClass("pause-icon").toggleClass("play-icon");
-
-
 function setListenButtonState(state){
   if (state == "stopped") {
     console.log("stopped state");
@@ -531,11 +527,15 @@ function loadListenPreview() {
     console.log(response);
     console.log(response.signed_url);
     audioElement.setAttribute('src', response.signed_url);
-    console.log("attribute was set");
-    
+
     audioElement.addEventListener("canplay",function(){
-      console.log("entered canplay, so play it")
+      console.log("autoplay onload")
       audioElement.play();
+    });
+    audioElement.addEventListener('ended', function() {
+      console.log("Audio ended.");
+      setListenButtonState("stopped");
+      audioElement.currentTime = 0;
     });
     });
 }
@@ -563,7 +563,7 @@ $("#previewPlayBtn").on("click", function () {
   }
 });
 
-// ---------------
+// -------------------------------------------------------------------------------------
 var previewPaused = true;
 var _previewAudio;
 var scriptApproved = 0;
