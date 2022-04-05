@@ -482,7 +482,7 @@ async function start_move_background_to_private_cloud_function(image_name) {
 
 // ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
 var audioElement = document.createElement('audio');
-//setListenButtonState("stopped");
+setListenButtonState("stopped");
 
 function setListenButtonState(state){
   if (state == "stopped") {
