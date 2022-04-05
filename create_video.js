@@ -530,8 +530,9 @@ function loadListenPreview() {
     console.log("Ajax call response and url: ")
     console.log(response);
     console.log(response.signed_url);
-
-    audioElement.setAttribute('src', 'response.signed_url');
+    audioElement.setAttribute('src', response.signed_url);
+    console.log("attribute was set");
+    
     audioElement.addEventListener("canplay",function(){
       console.log("entered canplay, so play it")
       audioElement.play();
@@ -562,7 +563,7 @@ $("#previewPlayBtn").on("click", function () {
   }
 });
 
-
+// ---------------
 var previewPaused = true;
 var _previewAudio;
 var scriptApproved = 0;
