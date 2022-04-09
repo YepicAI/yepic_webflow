@@ -491,7 +491,7 @@ const borderCss = {
     if (state == "stopped") {
       console.log("stopped state");
       listenButtonStatus = "stopped";
-      $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("play-icon");
+      $("#previewIcon").removeClass("pause-icon").removeClass("loading-icon").addClass("play-icon");
     } else if (state == "loading") {
       console.log("loading state");
       listenButtonStatus = "loading";
@@ -499,7 +499,7 @@ const borderCss = {
     } else if (state == "playing") {
       console.log("playing state");
       listenButtonStatus = "playing";
-      $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("pause-icon")
+      $("#previewIcon").removeClass("loading-icon").removeClass("play-icon").addClass("pause-icon")
     }
   }
   
