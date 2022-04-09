@@ -35,6 +35,8 @@ const borderCss = {
     background: "office-background-FHD.png",
     size: "",
     circleSize: "",
+    voice_api_provider: "",
+    voice_provider: "",
   };
   var actorTypePositionSelection = {
     fullBody: "centre",
@@ -519,6 +521,8 @@ const borderCss = {
         email: fV.email,
         memberstack_id: fV.id,
         script_approval: scriptApproved,
+        voice_api_provider: fV.voice_api_provider,
+        voice_provider:  fV.voice_provider
       }),
     };
     console.log("Ajax call: ");
@@ -527,18 +531,18 @@ const borderCss = {
       console.log(response);
       console.log(response.signed_url);
       audioElement.setAttribute('src', response.signed_url);
-  
-      audioElement.addEventListener("canplay",function(){
-        console.log("autoplay onload")
-        audioElement.play();
-      });
-      audioElement.addEventListener('ended', function() {
-        console.log("Audio ended.");
-        setListenButtonState("stopped");
-        audioElement.currentTime = 0;
-      });
       });
   }
+
+  audioElement.addEventListener('ended', function() {
+    console.log("INSIDE ENDED");
+    setListenButtonState("stopped");
+    audioElement.currentTime = 0;
+  });
+  audioElement.addEventListener("canplay",function(){
+    console.log("INSIDE CANPLAY")
+    audioElement.play();
+  });
   
   $("#previewPlayBtnOFF").on("click", function () {
     fV.script = $("#video-script").val();
@@ -685,6 +689,8 @@ const borderCss = {
   $(".form-tab-voice-wrap").on("click", ".form-voice", function () {
     if (!$(this).hasClass("form-voice-unavail")) {
       fV.voice = $(this).attr("data-voice");
+      fV.voice_api_provider = $(this).attr("data-voice-api-provider");
+      fV.voice_provider = $(this).attr("data-voice-provider");
       $(".form-tab-voice-wrap").css({ borderColor: "transparent" });
       $(".form-tab-voice-wrap .form-voice").css({ borderColor: "transparent" });
       $("#customAudio").css({ borderColor: "transparent" });
