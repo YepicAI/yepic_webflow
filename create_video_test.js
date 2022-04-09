@@ -53,6 +53,7 @@ const borderCss = {
     fV.id = member["id"];
     fV.membershipTypeId = $memberstack.membership.status;
   });
+  var audioPreviewLocalStorage = {};
   
   // Page load first steps
   $(".preview-circle-img-wrap").hide();
@@ -504,6 +505,15 @@ const borderCss = {
   }
   
   function loadListenPreview() {
+    compositeAudioKey = fV.script + fV.voice;
+    
+    if (audioPreviewLocalStorage.has(compositeAudioKey)) {
+      console.log("Audio already generated: " + audioPreviewLocalStorage[compositeAudioKey]);
+      audioElement.setAttribute('src', audioPreviewLocalStorage[compositeAudioKey]);
+      setListenButtonState("playing");
+      audioElement.play();
+
+    } else {
     console.log("Sending call to generate and play listen preview");
     var settings = {
       url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
@@ -529,12 +539,14 @@ const borderCss = {
     $.ajax(settings).done(function (response) {
       console.log("Ajax call response and url: ")
       console.log(response);
-      console.log(response.signed_url);
+      console.log(response.signed_url);  
+      audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
       audioElement.setAttribute('src', response.signed_url);
       console.log("Set play")
       setListenButtonState("playing");
       audioElement.play();
       });
+    }
   }
 
   audioElement.addEventListener('ended', function() {
