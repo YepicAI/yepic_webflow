@@ -568,7 +568,7 @@ $("#previewPlayBtnOFF").on("click", function () {
   }
 });
 
-// -------------------------------------------------------------------------------------
+// --------------------------------------- OLD LISTEN ----------------------------------------------
 var previewPaused = true;
 var _previewAudio;
 var scriptApproved = 0;
@@ -618,6 +618,8 @@ function playPreview() {
       email: fV.email,
       memberstack_id: fV.id,
       script_approval: scriptApproved,
+      voice_api_provider: fV.voice_api_provider,
+      voice_provider:  fV.voice_provider
     }),
   };
   
