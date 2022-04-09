@@ -35,6 +35,7 @@ const borderCss = {
     background: "office-background-FHD.png",
     size: "",
     circleSize: "",
+    voice: "",
     voice_api_provider: "",
     voice_provider: "",
   };
@@ -685,7 +686,9 @@ const borderCss = {
       $("#tooltip").css("opacity", 0);
     }
   }
-  
+
+
+  // ------------------------------------------------- SELECT voice -------------------------------------------------
   $(".form-tab-voice-wrap").on("click", ".form-voice", function () {
     if (!$(this).hasClass("form-voice-unavail")) {
       fV.voice = $(this).attr("data-voice");
@@ -743,7 +746,8 @@ const borderCss = {
       formErrors = true;
       $(".form-tab-bg-wrap").css(redBorderCss);
     }
-    if (fV.voice == 0) {
+    if (fV.voice == "") {
+      console.log("no voice selected")
       formErrors = true;
       $(".form-tab-voice-wrap").css(redBorderCss);
     }
