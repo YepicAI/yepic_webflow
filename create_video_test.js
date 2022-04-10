@@ -508,9 +508,9 @@ const borderCss = {
     compositeAudioKey = fV.script + fV.voice;
 
     console.log("test");
-    console.log(audioPreviewLocalStorage.compositeAudioKey)
+    console.log(audioPreviewLocalStorage[compositeAudioKey])
 
-    if (audioPreviewLocalStorage.compositeAudioKey !== undefined) {
+    if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
       console.log("Audio already generated: " + audioPreviewLocalStorage[compositeAudioKey]);
       audioElement.setAttribute('src', audioPreviewLocalStorage[compositeAudioKey]);
       setListenButtonState("playing");
