@@ -24,10 +24,10 @@ jQuery(document).ready(function($){
         return false;
     }
     
-    function send_data(custom_id) {
+    function send_data() {
       let result;
       var data = {
-        custom_id: custom_id
+        custom_id: user.id
       }
       console.log("user id: " + user.id)
       try {
@@ -46,11 +46,9 @@ jQuery(document).ready(function($){
     
     function verify_email(){
         var custom_id = getUrlParameter('id');
-        send_data(custom_id);
+        send_data();
         console.log("Email is verified");
     }
-    
     setTimeout(verify_email, 1000);
-    
 });
 
