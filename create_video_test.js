@@ -539,6 +539,7 @@ const borderCss = {
       }),
     };
     console.log("Ajax call: ");
+
     $.ajax(settings).done(function (response) {
       console.log("Ajax call response and url: ")
       console.log(response);
@@ -553,7 +554,6 @@ const borderCss = {
   }
 
   audioElement.addEventListener('ended', function() {
-    console.log("INSIDE ENDED");
     setListenButtonState("stopped");
     audioElement.currentTime = 0;
   });
@@ -570,11 +570,9 @@ const borderCss = {
       console.log("Was in a stopped state so start loading: ")
       setListenButtonState("loading");
       loadListenPreview();
-    }
-    if (listenButtonStatus == "loading") {
+    } else if (listenButtonStatus == "loading") {
       console.log("Was in a loading state, so do nothing: ")
-    } 
-    if (listenButtonStatus == "playing") {
+    } else if (listenButtonStatus == "playing") {
       console.log("Was in a playing state, so stop it: ")
       setListenButtonState("stopped");
       audioElement.pause();
