@@ -8,18 +8,16 @@ $(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
             audioElement.setAttribute('src', audioSrc);
             audioElement.play();
             audioState = "playing";
-            $('.form-voice-sample-child').each(function() {
+            audioElement.addEventListener('ended', function() {
                   $(this).removeClass("pause").addClass("play");
-              });
+                  setListenButtonState("stopped");
+                  audioElement.currentTime = 0;
+            });
       } else {
+            $(this).removeClass("pause").addClass("play");
             audioElement.pause();
             audioElement.currentTime = 0;
             audioState = "stopped"
       }
 });
 
-audioElement.addEventListener('ended', function() {
-      console.log("INSIDE ENDED");
-      setListenButtonState("stopped");
-      audioElement.currentTime = 0;
-});
