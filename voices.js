@@ -2,8 +2,12 @@ var audioElement = document.createElement('audio');
 var audioState = "stopped"
 var actualAudio = ""
 
-$(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {    
+$(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
+
       if (audioState == "stopped") {
+            $('.form-voice-sample-child').each(function() {
+                  $(this).children("div").removeClass("pause").addClass("play");
+            });            
             console.log("stopped state");
             actualAudio = $(this).children("div");
             actualAudio.removeClass("play").addClass("pause");
