@@ -6,7 +6,7 @@ var lastVoice = "";
 $(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
       if (lastVoice != "" && lastVoice != $(this).attr("data-src")) {
             $('.form-voice-sample-child').each(function() {
-                  $(this).children("div").removeClass("pause").addClass("play");
+                  $(this).removeClass("pause").addClass("play");
             });
             audioElement.pause();
             audioElement.currentTime = 0;
