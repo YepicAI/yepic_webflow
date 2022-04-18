@@ -10,13 +10,14 @@ $(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
             audioElement.play();
             audioState = "playing";
             audioElement.addEventListener('ended', function() {
-                  $(this).removeClass("pause").addClass("play");
+                  console.log("ended");
+                  $(this).children("div").removeClass("pause").addClass("play");
                   audioElement.currentTime = 0;
                   audioState = "stopped"
             });
       } else {
             console.log("playing state");
-            $(this).removeClass("pause").addClass("play");
+            $(this).children("div").removeClass("pause").addClass("play");
             audioElement.pause();
             audioElement.currentTime = 0;
             audioState = "stopped"
