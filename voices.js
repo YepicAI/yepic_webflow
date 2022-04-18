@@ -1,18 +1,23 @@
 var audioElement = document.createElement('audio');
-var audioState = "stopped"
-var actualAudio = ""
+var audioState = "stopped";
+var actualAudio = "";
+var lastVoice = "";
 
 $(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
-
-      if (audioState == "stopped") {
+      if (lastVoice != "" && lastVoice != $(this).attr("data-src")) {
             $('.form-voice-sample-child').each(function() {
                   $(this).children("div").removeClass("pause").addClass("play");
-            });            
+            });
+            audioElement.pause();
+            audioElement.currentTime = 0;
+            audioState = "stopped";
+      }
+      lastVoice = $(this).attr("data-src");
+      if (audioState == "stopped") {        
             console.log("stopped state");
             actualAudio = $(this).children("div");
             actualAudio.removeClass("play").addClass("pause");
-            var audioSrc = $(this).attr("data-src");
-            audioElement.setAttribute('src', audioSrc);
+            audioElement.setAttribute('src', lastVoice);
             audioElement.play();
             audioState = "playing";
             audioElement.addEventListener('ended', function() {
@@ -29,4 +34,3 @@ $(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
             audioState = "stopped"
       }
 });
-
