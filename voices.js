@@ -10,8 +10,8 @@ $(".form-tab-voice-wrap").on("click",".form-voice-sample", function () {
             audioState = "playing";
             audioElement.addEventListener('ended', function() {
                   $(this).removeClass("pause").addClass("play");
-                  setListenButtonState("stopped");
                   audioElement.currentTime = 0;
+                  audioState = "stopped"
             });
       } else {
             $(this).removeClass("pause").addClass("play");
