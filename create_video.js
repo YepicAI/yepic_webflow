@@ -53,6 +53,7 @@ MemberStack.onReady.then(function (member) {
   fV.id = member["id"];
   fV.membershipTypeId = $memberstack.membership.status;
 });
+var audioPreviewLocalStorage = {};
 
 // Page load first steps
 $(".preview-circle-img-wrap").hide();
@@ -289,7 +290,6 @@ $("#background-selection2").on("click", "#customBackground", function () {
   previewCustomUpload();
 });
 
-
 // ---------------------- INITIALIZE -------------------------
 function InitializeSelections() {
   $("[data-actor='Alex']").css(borderCss);
@@ -307,7 +307,6 @@ function InitializeActorPositionAndTypeSelection() {
   fV.actorType = "full-body";
   fV.position = actorTypePositionSelection.fullBody;
 }
-
 
 async function isEmailVerified(id) {
   let result;
@@ -354,14 +353,17 @@ $(".popup-email-verify-buttons").on("click", function () {
   reSendEmailVerification();
 });
 
-
 async function InitializeIsUserVerified() {
   const response = await isEmailVerified(fV.id);
   const is_email_verified_json = JSON.parse(response);
   if (!is_email_verified_json.is_email_verified) {
     $(".form-create-button-denied-wrap").css("display", "block");
-    $(".popup-email-verify-wrap").css("display", "block");
+    $("#cv-verify-email-popup").css("display", "block");
     $(".form-listen-denied-wrap").css("display", "block");
+
+    $(".form-create-button-denied-wrap").on("click", function () {
+      $("#cv-verify-email-popup").css("display", "block");
+    });
   }
 }
 
@@ -491,7 +493,7 @@ function setListenButtonState(state){
   if (state == "stopped") {
     console.log("stopped state");
     listenButtonStatus = "stopped";
-    $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("play-icon");
+    $("#previewIcon").removeClass("pause-icon").removeClass("loading-icon").addClass("play-icon");
   } else if (state == "loading") {
     console.log("loading state");
     listenButtonStatus = "loading";
@@ -499,11 +501,23 @@ function setListenButtonState(state){
   } else if (state == "playing") {
     console.log("playing state");
     listenButtonStatus = "playing";
-    $("#previewIcon").removeClass("play-icon").removeClass("loading-icon").addClass("pause-icon")
+    $("#previewIcon").removeClass("loading-icon").removeClass("play-icon").addClass("pause-icon")
   }
 }
 
 function loadListenPreview() {
+  compositeAudioKey = fV.script + fV.voice;
+
+  console.log("test");
+  console.log(audioPreviewLocalStorage[compositeAudioKey])
+
+  if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
+    console.log("Audio already generated: " + audioPreviewLocalStorage[compositeAudioKey]);
+    audioElement.setAttribute('src', audioPreviewLocalStorage[compositeAudioKey]);
+    setListenButtonState("playing");
+    audioElement.play();
+
+  } else {
   console.log("Sending call to generate and play listen preview");
   var settings = {
     url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
@@ -521,31 +535,28 @@ function loadListenPreview() {
       name: fV.name,
       email: fV.email,
       memberstack_id: fV.id,
-      script_approval: scriptApproved,
       voice_api_provider: fV.voice_api_provider,
       voice_provider:  fV.voice_provider
     }),
   };
   console.log("Ajax call: ");
-  $.ajax(settings).done(function (response) {
-    console.log("Ajax call response and url: ")
-    console.log(response);
-    console.log(response.signed_url);
+
+  $.ajax(settings).done(function (response) { 
+    audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
     audioElement.setAttribute('src', response.signed_url);
+    setListenButtonState("playing");
+    audioElement.play();
     });
+  }
 }
 
 audioElement.addEventListener('ended', function() {
-  console.log("INSIDE ENDED");
   setListenButtonState("stopped");
   audioElement.currentTime = 0;
 });
-audioElement.addEventListener("canplay",function(){
-  console.log("INSIDE CANPLAY")
-  audioElement.play();
-});
 
-$("#previewPlayBtnOFF").on("click", function () {
+$("#previewPlayBtn").unbind().click(function() {
+  console.log("click event on listen")
   fV.script = $("#video-script").val();
   if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
     console.log("Missing parameter, so do nothing.")
@@ -556,11 +567,9 @@ $("#previewPlayBtnOFF").on("click", function () {
     console.log("Was in a stopped state so start loading: ")
     setListenButtonState("loading");
     loadListenPreview();
-  }
-  if (listenButtonStatus == "loading") {
+  } else if (listenButtonStatus == "loading") {
     console.log("Was in a loading state, so do nothing: ")
-  } 
-  if (listenButtonStatus == "playing") {
+  } else if (listenButtonStatus == "playing") {
     console.log("Was in a playing state, so stop it: ")
     setListenButtonState("stopped");
     audioElement.pause();
@@ -568,119 +577,7 @@ $("#previewPlayBtnOFF").on("click", function () {
   }
 });
 
-// --------------------------------------- OLD LISTEN ----------------------------------------------
-var previewPaused = true;
-var _previewAudio;
-var scriptApproved = 0;
-
-function previewAbuseCheckToggle() {
-  if (scriptApproved === false) {
-    $("#aboveScript").text(
-      "Your script violates our Terms & Conditions. Content of discriminatory, sexual, hateful, criminal or political nature will not be generated."
-    );
-    $("#aboveScript").css(redBorderCss);
-  } else if (scriptApproved === true) {
-    $("#aboveScript").text(
-      "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
-    );
-    $("#aboveScript").css({ borderColor: "transparent" });
-  }
-}
-
-function previewListen() {
-  console.log("This doesnt do anything, its from webflow.")
-  fV.script = $("#video-script").val();
-  scriptApproved = true;
-  playPreview();  
-}
-
-function playPreview() {
-  if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
-    console.log(fV);
-    return;
-  }
-  
-  console.log("in playpreview");
-  var settings = {
-    url: "https://speech2vid-api.nw.r.appspot.com/audio/preview",
-    method: "POST",
-    crossDomain: true,
-    timeout: 0,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
-    },
-    data: JSON.stringify({
-      voice: fV.voice,
-      script: fV.script,
-      name: fV.name,
-      email: fV.email,
-      memberstack_id: fV.id,
-      script_approval: scriptApproved,
-      voice_api_provider: fV.voice_api_provider,
-      voice_provider:  fV.voice_provider
-    }),
-  };
-  
-  settings.url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio';
-
-  if (scriptApproved === false) {
-    if (previewDisabled == false) {
-      console.log("PlayPreview FALSE");
-
-      $("#aboveScript").text(
-        "Your script violates our Terms & Conditions. Content of discriminatory, sexual, hateful, criminal or political nature will not be generated."
-      );
-      $("#aboveScript").css(redBorderCss);
-      $("#video-script").css(redBorderCss);
-      settings.url = "https://speech2vid-api.nw.r.appspot.com/audio/record_preview";
-      
-      $.ajax(settings).done(function (response) {
-        console.log(response);
-      });
-    }
-  } else if (scriptApproved === true) {
-    console.log("PlayPreview TRUE");
-    $("#aboveScript").text(
-      "Audio preview can take up to 10 seconds for some voices. We are working on a fix."
-    );
-    $("#aboveScript").css({ borderColor: "transparent" });
-    $("#video-script").css({ borderColor: "#bccce5" });
-
-    if (!previewPaused) {
-      _previewAudio.pause();
-
-      previewPaused = true;
-      $("#previewIcon").removeClass("pause-icon").toggleClass("play-icon");
-    } else {
-      $("#previewIcon").removeClass("play-icon").toggleClass("pause-icon");
-      previewPaused = false;
-      $.ajax(settings).done(function (response) {
-        console.log(response);
-        _previewAudio = new Audio(response.signed_url);
-        _previewAudio.play().then((_) => {
-          _previewAudio
-            .addEventListener("ended", function () {
-              previewPaused = true;
-              $("#previewIcon")
-                .removeClass("pause-icon")
-                .toggleClass("play-icon");
-            })
-            .catch((error) => {
-              console.log("Error Occured!");
-            });
-        });
-      });
-    }
-  } else {
-    console.log("Preview Listen is disabled");
-  }
-}
-
-
-
-// ------------------------------------------------- NOT refactored part: -------------------------------------------------
+// ------------------------------------------------- SELECT voice -------------------------------------------------
 function checkListenPreview() {
   if (scriptLengthOk && fV.voice != 0) {
     previewDisabled = false;
@@ -689,8 +586,6 @@ function checkListenPreview() {
   }
 }
 
-
-// ------------------------------------------------- SELECT voice -------------------------------------------------
 $(".form-tab-voice-wrap").on("click", ".form-voice", function () {
   if (!$(this).hasClass("form-voice-unavail")) {
     fV.voice = $(this).attr("data-voice");
