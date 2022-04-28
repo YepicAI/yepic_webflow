@@ -363,6 +363,7 @@ async function InitializeIsUserVerified() {
 
     $(".form-create-button-denied-wrap").on("click", function () {
       $("#cv-verify-email-popup").css("display", "block");
+      $("#cv-verify-email-popup").css("opacity", "");
     });
   }
 }
