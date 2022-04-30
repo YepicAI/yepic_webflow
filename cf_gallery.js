@@ -8,12 +8,12 @@ MemberStack.onReady.then(function (member) {
 
 function title_case(str) {
     return str.replace(
-      /\w\S*/g,
-      function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
+        /\w\S*/g,
+        function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
     );
-  }
+}
 
 function insert_video_html(index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
@@ -60,6 +60,7 @@ function insert_video_html(index, row) {
                                     <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.created_date)).toLocaleString()}<br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
+                                    <div>Moderation status: ${row.script_accepted ? "Accepted" : "Marked for moderation"}<br/></div>
                                 </div>
                             </div>
                         </div>
@@ -75,13 +76,13 @@ async function get_video_gallery() {
 
     let response = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify({'id': user.id}),
+        body: JSON.stringify({ 'id': user.id }),
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + MemberStack.getToken(),
-        },        
+        },
     });
-    
+
     var result = await response.json();
 
     //console.log(result);
@@ -99,29 +100,31 @@ async function insert_video_html_batch() {
     buffer_size = 5;
 
     for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + buffer_size; index++) {
-        insert_video_html(video_gallery_result.video_gallery.length-index, video_gallery_result.video_gallery[index]);
+        insert_video_html(video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
     }
 
     gallery_video_index += buffer_size;
 
     if (gallery_video_index >= video_gallery_result.video_gallery.length) {
+        var button_load = document.getElementById('button-load');
         button_load.style.display = "none";
     }
 }
 
 var video_gallery_result = [];
 var gallery_video_index = 0;
-var button_load = document.getElementById('button-load');
 var disable_load_click = false;
 
 window.addEventListener("load", async (e) => {
-    await get_video_gallery(); 
-});
+    await get_video_gallery();
 
-button_load.addEventListener("click", async (e) => {
-    disable_load_click = true;
-    
-    await insert_video_html_batch();
-    
-    disable_load_click = false;
-})
+    var button_load = document.getElementById('button-load');
+
+    button_load.addEventListener("click", async (e) => {
+        disable_load_click = true;
+
+        await insert_video_html_batch();
+
+        disable_load_click = false;
+    });
+});
