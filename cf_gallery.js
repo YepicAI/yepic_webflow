@@ -121,11 +121,10 @@ window.addEventListener("load", async (e) => {
     var button_load = document.getElementById('button-load');
 
     button_load.addEventListener("click", async (e) => {
+        if (disable_load_click) return;
+        
         disable_load_click = true;
-
-        if (!disable_load_click) {
-            await insert_video_html_batch();
-            disable_load_click = false;
-        }
+        await insert_video_html_batch();
+        disable_load_click = false;
     });
 });
