@@ -6,6 +6,15 @@ MemberStack.onReady.then(function (member) {
     user.membershipTypeId = $memberstack.membership.status;
 });
 
+function title_case(str) {
+    return str.replace(
+      /\w\S*/g,
+      function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
+  }
+
 function insert_video_html(index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
     const html_template = `
@@ -47,8 +56,8 @@ function insert_video_html(index, row) {
                             <div class="t-16-bold-cap">Details</div>
                             <div class="properties-wrap">
                                 <div class="margin-bottom margin-s">
-                                    <div class="t-preview-var">Avatar: ${row.actor}<br/></div>
-                                    <div class="t-preview-var">Voice: ${row.voice_provider} ${row.voice}<br/></div>
+                                    <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/></div>
+                                    <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.created_date)).toLocaleString()}<br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
                                 </div>
