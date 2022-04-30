@@ -42,7 +42,7 @@ function insert_video_html(row) {
                     <div class="gallery-video-left">
                         <div class="video-preview">
                             <video controls>
-                                <source src="${row.unique_webpage}">
+                                <source src="${row.current_video_most_recent}">
                             </video>
                             <div class="eye-wrap"></div>
                         </div>
