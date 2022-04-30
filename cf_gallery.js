@@ -56,11 +56,11 @@ function insert_video_html(index, row) {
                             <div class="t-16-bold-cap">Details</div>
                             <div class="properties-wrap">
                                 <div class="margin-bottom margin-s">
-                                    <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/></div>
-                                    <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
-                                    <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.created_date)).toLocaleString()}<br/></div>
-                                    <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
-                                    <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/></div>
+                                    <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/><br/></div>
+                                    <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/><br/></div>
+                                    <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.created_date)).toLocaleString()}<br/><br/></div>
+                                    <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
+                                    <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
                                 </div>
                             </div>
                         </div>
