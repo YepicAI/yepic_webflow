@@ -92,6 +92,8 @@ function insert_video_html(index, row) {
     $("#myvideolist").append(html_template_string);
 }
 
+var video_gallery_result = [];
+
 async function get_video_gallery() {
     var url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
 
@@ -112,14 +114,16 @@ async function get_video_gallery() {
 
     if (result.status !== 'success') return;
 
+    video_gallery_result = result;
+
     await insert_video_html_batch();
 }
 
 var gallery_video_index = 0;
 
 async function insert_video_html_batch() {
-    for (var index = gallery_video_index; index < result.video_gallery.length && index < gallery_video_index + 10; index++) {
-        insert_video_html(result.video_gallery.length-index, result.video_gallery[index]);
+    for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + 10; index++) {
+        insert_video_html(video_gallery_result.video_gallery.length-index, video_gallery_result.video_gallery[index]);
     }
 
     gallery_video_index += 5;
