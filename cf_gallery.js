@@ -106,8 +106,10 @@ async function get_video_gallery() {
     
     var result = await response.json();
 
-    for (var index = 0; index < result.length; index++) {
-        insert_video_html(result[index]);
+    if (result.status !== 'success') return;
+
+    for (var index = 0; index < result.video_gallery.length; index++) {
+        insert_video_html(result.video_gallery[index]);
     }
 }
 
