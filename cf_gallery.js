@@ -106,6 +106,10 @@ async function get_video_gallery() {
     
     var result = await response.json();
 
+    console.log(result);
+    console.log(result.status);
+    console.log(result.video_gallery);
+
     if (result.status !== 'success') return;
 
     for (var index = 0; index < result.video_gallery.length; index++) {
