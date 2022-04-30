@@ -122,11 +122,13 @@ async function get_video_gallery() {
 var gallery_video_index = 0;
 
 async function insert_video_html_batch() {
-    for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + 10; index++) {
+    buffer_size = 5;
+
+    for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + buffer_size; index++) {
         insert_video_html(video_gallery_result.video_gallery.length-index, video_gallery_result.video_gallery[index]);
     }
 
-    gallery_video_index += 5;
+    gallery_video_index += buffer_size;
 }
 
 window.addEventListener("load", async (e) => {
