@@ -50,7 +50,7 @@ function insert_video_html(index, row) {
                                     <div class="t-preview-var">Avatar: ${row.actor}<br/></div>
                                     <div class="t-preview-var">Voice: ${row.voice_provider} ${row.voice}<br/></div>
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.created_date)).toLocaleString()}<br/></div>
-                                    <div>Production Status: ${video_ready ? "Video ready" : "Video in queue for production"}<br/></div>
+                                    <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
                                 </div>
                             </div>
                         </div>
