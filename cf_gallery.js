@@ -6,7 +6,7 @@ MemberStack.onReady.then(function (member) {
     user.membershipTypeId = $memberstack.membership.status;
 });
 
-function insert_video_html(row) {
+function insert_video_html(index, row) {
     // var meta_record_id
     // var actor_raw
     // var actor
@@ -48,7 +48,7 @@ function insert_video_html(row) {
                         </div>
                         <div class="display-flex dir-vert justify-sb">
                             <div>
-                                <h2 class="t-16-bold-cap">Video Title</h2>
+                                <h2 class="t-16-bold-cap">Video Title (#${index})</h2>
                                 <p id="videoName" class="p-template">${row.video_name}</p>
                             </div>
                             <div>
@@ -112,11 +112,31 @@ async function get_video_gallery() {
 
     if (result.status !== 'success') return;
 
-    for (var index = 0; index < result.video_gallery.length; index++) {
-        insert_video_html(result.video_gallery[index]);
+    await insert_video_html_batch();
+}
+
+var gallery_video_index = 0;
+
+async function insert_video_html_batch() {
+    for (var index = gallery_video_index; index < result.video_gallery.length && index < gallery_video_index + 10; index++) {
+        insert_video_html(result.video_gallery.length-index, result.video_gallery[index]);
     }
+
+    gallery_video_index += 5;
 }
 
 window.addEventListener("load", async (e) => {
     await get_video_gallery(); 
 });
+
+button_load = document.getElementById('button-load');
+
+var disable_load_click = false;
+
+button_load.addEventListener("click", async (e) => {
+    disable_load_click = true;
+    
+    await insert_video_html_batch();
+    
+    disable_load_click = false;
+})
