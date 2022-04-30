@@ -123,8 +123,9 @@ window.addEventListener("load", async (e) => {
     button_load.addEventListener("click", async (e) => {
         disable_load_click = true;
 
-        await insert_video_html_batch();
-
-        disable_load_click = false;
+        if (!disable_load_click) {
+            await insert_video_html_batch();
+            disable_load_click = false;
+        }
     });
 });
