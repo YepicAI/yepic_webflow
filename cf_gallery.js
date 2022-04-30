@@ -47,13 +47,10 @@ function insert_video_html(index, row) {
                             <div class="t-16-bold-cap">Details</div>
                             <div class="properties-wrap">
                                 <div class="margin-bottom margin-s">
-                                    <div class="t-preview-var">Actor:</div>
-                                    <div id="actor">${row.actor}</div>
-                                </div>
-                                <div class="margin-bottom margin-s">
-                                    <div class="t-preview-var">Created on:</div>
-                                    <div id="createdOn">${new Date(Date.parse(row.created_date)).toLocaleString()}</div>
-                                    <div>Production Status: ${video_ready ? "Video ready" : "Video in queue for production"}</div>
+                                    <div class="t-preview-var">Avatar: ${row.actor}<br/></div>
+                                    <div class="t-preview-var">Voice: ${row.voice_provider} ${row.voice}<br/></div>
+                                    <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.created_date)).toLocaleString()}<br/></div>
+                                    <div>Production Status: ${video_ready ? "Video ready" : "Video in queue for production"}<br/></div>
                                 </div>
                             </div>
                         </div>
