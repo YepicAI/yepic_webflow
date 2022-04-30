@@ -7,36 +7,6 @@ MemberStack.onReady.then(function (member) {
 });
 
 function insert_video_html(index, row) {
-    // var meta_record_id
-    // var actor_raw
-    // var actor
-    // var voice
-    // var voice_api_provider
-    // var voice_provider
-    // var script
-    // var custom_audio_file
-    // var audio_file
-    // var current_video_most_recent
-    // var audio_fea_link
-    // var avatar_type
-    // var background_url
-    // var script_approval
-    // var create_video
-    // var watermarked
-    // var avatar_size
-    // var avatar_position
-    // var avatar_circle_background
-    // var avatar_circle_background_rim
-    // var avatar_size_circle
-    // var vm_status
-    // var memberstack_id
-    // var video_name
-    // var background_image
-    // var unique_webpage
-    // var created_date
-    // var last_modified
-    // var download_url
-
     const html_template = `
                     <div class="video-item">
                     <div class="gallery-video-left">
@@ -92,8 +62,6 @@ function insert_video_html(index, row) {
     $("#myvideolist").append(html_template_string);
 }
 
-var video_gallery_result = [];
-
 async function get_video_gallery() {
     var url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
 
@@ -119,8 +87,6 @@ async function get_video_gallery() {
     await insert_video_html_batch();
 }
 
-var gallery_video_index = 0;
-
 async function insert_video_html_batch() {
     buffer_size = 5;
 
@@ -129,15 +95,20 @@ async function insert_video_html_batch() {
     }
 
     gallery_video_index += buffer_size;
+
+    if (gallery_video_index >= video_gallery_result.video_gallery.length) {
+        button_load.style.display = "none";
+    }
 }
+
+var video_gallery_result = [];
+var gallery_video_index = 0;
+var button_load = document.getElementById('button-load');
+var disable_load_click = false;
 
 window.addEventListener("load", async (e) => {
     await get_video_gallery(); 
 });
-
-button_load = document.getElementById('button-load');
-
-var disable_load_click = false;
 
 button_load.addEventListener("click", async (e) => {
     disable_load_click = true;
