@@ -7,6 +7,7 @@ MemberStack.onReady.then(function (member) {
 });
 
 function insert_video_html(index, row) {
+    video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
     const html_template = `
                     <div class="video-item">
                     <div class="gallery-video-left">
@@ -52,6 +53,7 @@ function insert_video_html(index, row) {
                                 <div class="margin-bottom margin-s">
                                     <div class="t-preview-var">Created on:</div>
                                     <div id="createdOn">${new Date(Date.parse(row.created_date)).toLocaleString()}</div>
+                                    <div>Production Status: ${video_ready ? "Video ready" : "Video in queue for production"}</div>
                                 </div>
                             </div>
                         </div>
