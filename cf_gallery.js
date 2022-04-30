@@ -81,7 +81,7 @@ function insert_video_html(row) {
                                 </div>
                                 <div class="margin-bottom margin-s">
                                     <div class="t-preview-var">Created on:</div>
-                                    <div id="createdOn">${row.created_date}</div>
+                                    <div id="createdOn">${new Date(Date.parse(created_date)).toLocaleString()}</div>
                                 </div>
                             </div>
                         </div>
@@ -106,9 +106,9 @@ async function get_video_gallery() {
     
     var result = await response.json();
 
-    console.log(result);
-    console.log(result.status);
-    console.log(result.video_gallery);
+    //console.log(result);
+    //console.log(result.status);
+    //console.log(result.video_gallery);
 
     if (result.status !== 'success') return;
 
