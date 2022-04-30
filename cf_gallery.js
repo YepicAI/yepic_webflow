@@ -7,7 +7,7 @@ MemberStack.onReady.then(function (member) {
 });
 
 function insert_video_html(index, row) {
-    video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
+    var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
     const html_template = `
                     <div class="video-item">
                     <div class="gallery-video-left">
