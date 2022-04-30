@@ -6,17 +6,14 @@ MemberStack.onReady.then(function (member) {
     user.membershipTypeId = $memberstack.membership.status;
 });
 
-var currentGetMoreIndex = 0;
-var data = [];
-
-function addVideoToPage(video) {
-    video_name = video.video_name
-    script = video.script
-    actor = video.actor
-    video_created = video.video_created
-    video_url = video.video_url
-    unique_webpage = video.unique_webpage
-    download_url = video.download_url
+function insert_video_html(row) {
+    video_name = row.video_name
+    script = row.script
+    actor = row.actor
+    video_created = row.video_created
+    video_url = row.video_url
+    unique_webpage = row.unique_webpage
+    download_url = row.download_url
     const Item = `
                     <div class="video-item">
                     <div class="gallery-video-left">
@@ -72,28 +69,25 @@ function addVideoToPage(video) {
     $("#myvideolist").append(videoElementHtmlString);
 }
 
-function loadVideosFromIndex(firstIndex, data) {
-    for (let index = firstIndex; index < data.pages.length; index++) {
-        const videoList = data.pages[index];
-        if (typeof videoList !== 'undefined' && videoList.length > 0) {
-            currentGetMoreIndex = index+1;
-            for (const video of videoList) {
-                addVideoToPage(video);
-            }
-            break;
-        }
+async function get_video_gallery() {
+    var url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
+
+    let response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({'id': user.id}),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + MemberStack.getToken(),
+        },        
+    });
+    
+    var result = await response.json();
+
+    for (var index = 0; index < result.length; index++) {
+        insert_video_html(result[index]);
     }
 }
 
-// ------------------  LOAD FIRST PAGE VIDEOS -----------------
-function LoadFirstPageVideos() {
-    $.getJSON('https://airtable-db-dot-speech2vid-api.nw.r.appspot.com//video/user/' + user.id, function(fetchData) {
-        data = fetchData;
-        loadVideosFromIndex(currentGetMoreIndex, data);
-    });
-}
-setTimeout(LoadFirstPageVideos, 1000);
-
-$("#button-load").click(function () {
-    loadVideosFromIndex(currentGetMoreIndex, data);
+window.addEventListener("load", async (e) => {
+    await get_video_gallery(); 
 });
