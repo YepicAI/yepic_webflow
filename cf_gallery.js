@@ -81,7 +81,7 @@ function insert_video_html(row) {
                                 </div>
                                 <div class="margin-bottom margin-s">
                                     <div class="t-preview-var">Created on:</div>
-                                    <div id="createdOn">${new Date(Date.parse(created_date)).toLocaleString()}</div>
+                                    <div id="createdOn">${new Date(Date.parse(row.created_date)).toLocaleString()}</div>
                                 </div>
                             </div>
                         </div>
