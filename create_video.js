@@ -507,7 +507,7 @@ function setListenButtonState(state){
 }
 
 function loadListenPreview() {
-  compositeAudioKey = fV.script + fV.voice;
+  compositeAudioKey = fV.voice_api_provider + fV.voice_provider + fV.voice + fV.script;
 
   console.log("test");
   console.log(audioPreviewLocalStorage[compositeAudioKey])
@@ -536,7 +536,7 @@ function loadListenPreview() {
       script: fV.script,
       name: fV.name,
       email: fV.email,
-      memberstack_id: fV.id,
+      id: fV.id,
       voice_api_provider: fV.voice_api_provider,
       voice_provider:  fV.voice_provider
     }),
