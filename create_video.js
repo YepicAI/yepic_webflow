@@ -528,6 +528,7 @@ function loadListenPreview() {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
+      "Authorization": `Bearer ${MemberStack.getToken()}`,
       "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
     },
     data: JSON.stringify({
