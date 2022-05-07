@@ -24,21 +24,38 @@ var VL = {};
 var backgroundClass = " ";
 var newClass;
 var selectedActorGender = 'actor-male'
-var fV = {
-  actor: "Alex",
-  actorPositionType: "full-body",
-  position: "centre",
-  circleBackgroundColor: "",
-  circleRimColor: "",
-  previewImgSrc: "https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png",
-  link: "https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png",
-  background: "office-background-FHD.png",
-  size: "",
-  circleSize: "",
-  voice: "",
-  voice_api_provider: "",
-  voice_provider: "",
-};
+var video_request_model = {
+  actor_raw                   :'Alex',
+  actor                       :'Alex',
+  voice                       :'',
+  voice_api_provider          :'',
+  voice_provider              :'',
+  script                      :'',
+  custom_audio_file           :'',
+  audio_file                  :'',
+  current_video_most_recent   :'',
+  audio_fea_link              :'',
+  avatar_type                 :'full-body',
+  background_url              :'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png',
+  script_approval             :'',
+  create_video                :'',
+  watermarked                 :'',
+  avatar_size                 :'',
+  avatar_position             :'centre',
+  avatar_circle_background    :'',
+  avatar_circle_background_rim:'',
+  avatar_size_circle          :'',
+  vm_status                   :'',
+  memberstack_id              :'',
+  video_name                  :'',
+  background_image            :'office-background-FHD.png',
+  unique_webpage              :'',
+  created_date                :'',
+  last_modified               :'',
+  download_url                :'',
+  preview_image_url           :'', //'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
+}
+
 var actorTypePositionSelection = {
   fullBody: "centre",
   circle: "circle-midcentre",
@@ -48,10 +65,10 @@ var actorTypePositionSelection = {
   classNameCircleImage: "m2",
 };
 MemberStack.onReady.then(function (member) {
-  fV.email = member["email"];
-  fV.name = member["name"];
-  fV.id = member["id"];
-  fV.membershipTypeId = $memberstack.membership.status;
+  //video_request_model.email = member["email"];
+  //video_request_model.name = member["name"];
+  video_request_model.memberstack_id = member["id"];
+  //video_request_model.memberstack_membership_status = $memberstack.membership.status;
 });
 var audioPreviewLocalStorage = {};
 
@@ -82,14 +99,14 @@ function selectActorPositionAndType(actorPosition, actorType, imageClassName) {
     $(".preview-circle-img-wrap").removeClass("t1 t2 t3 m1 m2 m3 b1 b2 b3");
     $(".preview-circle-img-wrap").addClass(imageClassName);
   }
-  fV.position = position;
-  fV.actorPositionType = actorType;
+  video_request_model.avatar_position = position;
+  video_request_model.avatar_type = actorType;
 };
 
 function changeCircleBackground(colorObject) {
   hexCode = colorObject.attr("data-hexcode");
-  fV.circleBackgroundColor = "#" + hexCode;
-  console.log(fV.circleBackgroundColor);
+  video_request_model.avatar_circle_background = "#" + hexCode;
+  console.log(video_request_model.avatar_circle_background);
 
   if (colorObject.hasClass('c1')) {
     backgroundColorClass = 'c1'
@@ -124,20 +141,20 @@ function changeCircleBackground(colorObject) {
 //----------- FULL-BODY/CIRCLE Tab selection -----------
 $("#tab-title-full").click(function () {
   selectActorPositionAndType(actorTypePositionSelection.classNameFullBody, "full-body", actorTypePositionSelection.classNameFullBodyImage);
-  $(".preview-img-wrap").children("img").attr("src", fV.previewImgSrc);
+  $(".preview-img-wrap").children("img").attr("src", video_request_model.preview_image_url);
   $(".preview-circle-img-wrap").hide();
   $(".preview-img-wrap").show();
   console.log("1");
-  fV.actorType = "full-body";
-  fV.position = actorTypePositionSelection.fullBody;
+  video_request_model.avatar_type = "full-body";
+  video_request_model.avatar_position = actorTypePositionSelection.fullBody;
 });
 $("#tab-title-circle").click(function () {
   selectActorPositionAndType(actorTypePositionSelection.classNameCircle, "circle", actorTypePositionSelection.classNameCircleImage);
-  $(".preview-circle-img-wrap").children().children("img").attr("src", fV.previewImgSrc);
+  $(".preview-circle-img-wrap").children().children("img").attr("src", video_request_model.preview_image_url);
   $(".preview-img-wrap").hide();
   $(".preview-circle-img-wrap").show();
-  fV.actorType = "circle";
-  fV.position = actorTypePositionSelection.circle;
+  video_request_model.avatar_type = "circle";
+  video_request_model.avatar_position = actorTypePositionSelection.circle;
 });
 
 //----------- FULL-BODY selection -----------
@@ -210,9 +227,9 @@ function cleanUpVoiceSelectionBasedOnActorGender(actorGender) {
 
 //----------- ACTOR selection -----------
 $(".form-actor-select-wrap").on("click", ".form-actor", function () {
-  fV.videoName = $("#video-name").val();
-  fV.actor = $(this).attr("data-actor");
-  fV.previewImgSrc = $(this).children("img").attr("src");
+  video_request_model.video_name = $("#video-name").val();
+  video_request_model.actor = $(this).attr("data-actor");
+  video_request_model.preview_image_url = $(this).children("img").attr("src");
 
   actorGender = $(this);
   if (actorGender.hasClass('actor-female')) {
@@ -230,11 +247,11 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
   $(".form-actor-select-wrap .form-actor").css({ borderColor: "transparent" });
   $($(this)).css(borderCss);
 
-  if (fV.actorPositionType == "full-body") {
-    $(".preview-img-wrap").children("img").attr("src", fV.previewImgSrc);
+  if (video_request_model.avatar_type == "full-body") {
+    $(".preview-img-wrap").children("img").attr("src", video_request_model.preview_image_url);
   }
-  if (fV.actorPositionType == "circle") {
-    $(".preview-circle-img-wrap").children().children("img").attr("src", fV.previewImgSrc);
+  if (video_request_model.avatar_type == "circle") {
+    $(".preview-circle-img-wrap").children().children("img").attr("src", video_request_model.preview_image_url);
   }
 });
 
@@ -254,9 +271,9 @@ $(".cv-lang-radio").on("click", function () {
 
 // ------------------------------------------------- SELECT BACKGROUND -------------------------------------------------
 function previewCustomUpload() {
-  fV.background = "custom";
+  video_request_model.background_image = "custom";
   var newSrc = $("#customBackground").children("img").attr("src");
-  var newURL = "url(" + fV.link + ")";
+  var newURL = "url(" + video_request_model.background_url + ")";
   newClass = "custom-background";
   $("#background-selection #background-select").css({
     borderColor: "transparent",
@@ -270,8 +287,8 @@ function previewCustomUpload() {
 }
 
 $("#background-selection").on("click", "#background-select", function () {
-  fV.background = "non-custom";
-  fV.link = $(this).attr("data-background");
+  video_request_model.background_image = "non-custom";
+  video_request_model.background_url = $(this).attr("data-background");
   $("#background-selection #background-select").css({
     borderColor: "transparent",
   });
@@ -304,8 +321,8 @@ function InitializeActorPositionAndTypeSelection() {
   $(".preview-img-wrap").css("opacity", 1); // ?
   $(".preview-img-wrap").show();
   selectActorPositionAndType(actorTypePositionSelection.classNameFullBody, "full-body", actorTypePositionSelection.classNameFullBodyImage);
-  fV.actorType = "full-body";
-  fV.position = actorTypePositionSelection.fullBody;
+  video_request_model.avatar_type = "full-body";
+  video_request_model.avatar_position = actorTypePositionSelection.fullBody;
 }
 
 async function isEmailVerified(id) {
@@ -332,9 +349,9 @@ async function isEmailVerified(id) {
 function reSendEmailVerification() {
   let result;
   var data = {
-    user_id: fV.id
+    user_id: video_request_model.memberstack_id
   }
-  console.log("user id: " + fV.id)
+  console.log("user id: " + video_request_model.memberstack_id)
   try {
       result = $.ajax({
           url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
@@ -354,7 +371,7 @@ $(".popup-email-verify-buttons").on("click", function () {
 });
 
 async function InitializeIsUserVerified() {
-  const response = await isEmailVerified(fV.id);
+  const response = await isEmailVerified(video_request_model.memberstack_id);
   const is_email_verified_json = JSON.parse(response);
   if (!is_email_verified_json.is_email_verified) {
     $(".form-create-button-denied-wrap").css("display", "block");
@@ -379,7 +396,7 @@ setTimeout(startUpSelection, 1000);
 // ---------------------------------------------------- IMAGE UPLOAD ------------------------------------------------------------------
 
 var imageFileName;
-var imageFile;
+var image_file;
 var req;
 const fileSelect = document.getElementById("fileSelect"),
   fileElem = document.getElementById("fileElem"),
@@ -404,7 +421,7 @@ function handleFiles() {
     $("#deleteBackground").show();
     const img = document.getElementById("uploadedImg");
     img.style.display = "";
-    imageFile = this.files[0];
+    image_file = this.files[0];
     imageFileName = this.files[1];
     img.src = URL.createObjectURL(this.files[0]);
     const customImage = document.getElementById("customBackground");
@@ -414,12 +431,12 @@ function handleFiles() {
     img.style.height = "96px";
     img.onload = function () {
       URL.revokeObjectURL(this.src);
-      fV.background = "custom";
+      video_request_model.background_image = "custom";
       $(".form-tab-bg-wrap").css({ borderColor: "transparent" });
       $("#customBackground").css(borderCss);
 
       uploadImage();
-      if (fV.link == 0) {
+      if (video_request_model.background_url == 0) {
         setTimeout(previewCustomUpload, 1000);
       } else {
         previewCustomUpload();
@@ -440,21 +457,21 @@ function uuid() {
 }
 
 async function uploadImage() {
-  var fileName = uuid() + imageFile.name.split(".").pop();
+  var upload_filename = uuid() + image_file.name.split(".").pop();
   $.ajax({
     url:
       "https://storage.googleapis.com/upload/storage/v1/b/yepicai-backend.appspot.com/o?uploadType=media&name=" +
-      fileName,
+      upload_filename,
     type: "POST",
-    data: imageFile,
+    data: image_file,
     processData: false,
     headers: {
-      "Content-Type": imageFile.type,
+      "Content-Type": image_file.type,
     },
     success: function (data) {
-      fV.uploadFilename = fileName;
-      fV.link = data.mediaLink;
-      start_move_background_to_private_cloud_function(fileName);
+      video_request_model.upload_filename = upload_filename;
+      video_request_model.background_url = data.mediaLink;
+      start_move_background_to_private_cloud_function(upload_filename);
       console.log("Moving to another bucket finished");
     },
     error: function () {
@@ -507,7 +524,7 @@ function setListenButtonState(state){
 }
 
 function loadListenPreview() {
-  compositeAudioKey = fV.voice_api_provider + fV.voice_provider + fV.voice + fV.script;
+  compositeAudioKey = video_request_model.voice_api_provider + video_request_model.voice_provider + video_request_model.voice + video_request_model.script;
 
   console.log("test");
   console.log(audioPreviewLocalStorage[compositeAudioKey])
@@ -529,17 +546,9 @@ function loadListenPreview() {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Authorization": `Bearer ${MemberStack.getToken()}`,
-      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
+      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public api key
     },
-    data: JSON.stringify({
-      voice: fV.voice,
-      script: fV.script,
-      name: fV.name,
-      email: fV.email,
-      id: fV.id,
-      voice_api_provider: fV.voice_api_provider,
-      voice_provider:  fV.voice_provider
-    }),
+    data: JSON.stringify(video_request_model),
   };
   console.log("Ajax call: ");
 
@@ -559,10 +568,10 @@ audioElement.addEventListener('ended', function() {
 
 $("#previewPlayBtn").unbind().click(function() {
   console.log("click event on listen")
-  fV.script = $("#video-script").val();
-  if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
+  video_request_model.script = $("#video-script").val();
+  if (video_request_model === undefined || video_request_model === null || video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice === '' || video_request_model.script === undefined || video_request_model.script === null || video_request_model.script === '') {
     console.log("Missing parameter, so do nothing.")
-    console.log(fV);
+    console.log(video_request_model);
     return;
   }
   if (listenButtonStatus == "stopped") {
@@ -581,7 +590,7 @@ $("#previewPlayBtn").unbind().click(function() {
 
 // ------------------------------------------------- SELECT voice -------------------------------------------------
 function checkListenPreview() {
-  if (scriptLengthOk && fV.voice != 0) {
+  if (scriptLengthOk && video_request_model.voice != 0) {
     previewDisabled = false;
     $("#previewPlayBtn").css({ opacity: 1 });
     $("#tooltip").css("opacity", 0);
@@ -590,71 +599,71 @@ function checkListenPreview() {
 
 $(".form-tab-voice-wrap").on("click", ".form-voice", function () {
   if (!$(this).hasClass("form-voice-unavail")) {
-    fV.voice = $(this).attr("data-voice");
-    fV.voice_api_provider = $(this).attr("data-voice-api-provider");
-    fV.voice_provider = $(this).attr("data-voice-provider");
+    video_request_model.voice = $(this).attr("data-voice");
+    video_request_model.voice_api_provider = $(this).attr("data-voice-api-provider");
+    video_request_model.voice_provider = $(this).attr("data-voice-provider");
     $(".form-tab-voice-wrap").css({ borderColor: "transparent" });
     $(".form-tab-voice-wrap .form-voice").css({ borderColor: "transparent" });
     $("#customAudio").css({ borderColor: "transparent" });
     $("#customAudio");
     $($(this)).css(borderVoice);
-    fV.videoName = $("#video-name").val();
+    video_request_model.video_name = $("#video-name").val();
     checkListenPreview();
   }
 });
 
 $("#customAudio").on("click", function () {
   if (!$(this).hasClass("form-voice-unavail")) {
-    fV.voice = "custom";
+    video_request_model.voice = "custom";
     $(".form-tab-voice-wrap").css({ borderColor: "transparent" });
     $(".form-tab-voice-wrap .form-voice").css({ borderColor: "transparent" });
     $("#customAudio").css(borderVoice);
-    fV.videoName = $("#video-name").val();
+    video_request_model.video_name = $("#video-name").val();
     checkListenPreview();
   }
 });
 
 function send_request() {
   var formErrors = false;
-  fV.script = $("#video-script").val();
-  fV.videoName = $("#video-name").val();
+  video_request_model.script = $("#video-script").val();
+  video_request_model.video_name = $("#video-name").val();
 
-  if (fV.actorPositionType == "full-body") {
-    fV.circleBackgroundColor = "";
-    fV.size = $("#size").val();
-    fV.circleSize = "";
+  if (video_request_model.avatar_type == "full-body") {
+    video_request_model.avatar_circle_background = "";
+    video_request_model.avatar_size = $("#size").val();
+    video_request_model.avatar_size_circle = "";
   }
-  if (fV.actorPositionType == "circle") {
-    fV.circleSize = $("#size-circle").val();
-    fV.size = "";
+  if (video_request_model.avatar_type == "circle") {
+    video_request_model.avatar_size_circle = $("#size-circle").val();
+    video_request_model.avatar_size = "";
   }
 
-  if (fV.videoName.length < 1) {
+  if (video_request_model.video_name.length < 1) {
     formErrors = true;
     $(".form-name-wrap").css(redBorderCss);
   }
-  if (fV.script.length < 3 && fV.voice != "custom" && fV.audioLink != "") {
+  if (video_request_model.script.length < 3 && video_request_model.voice != "custom" && video_request_model.custom_audio_file != "") {
     formErrors = true;
     $("#video-script").css(redBorderCss);
   }
-  if (!fV.actor) {
+  if (!video_request_model.actor) {
     formErrors = true;
     $(".form-actor-select-wrap").css(redBorderCss);
   }
-  if (!fV.background) {
+  if (!video_request_model.background_url) {
     formErrors = true;
     $(".form-tab-bg-wrap").css(redBorderCss);
   }
-  if (fV.voice == "") {
+  if (video_request_model.voice == "") {
     console.log("no voice selected")
     formErrors = true;
     $(".form-tab-voice-wrap").css(redBorderCss);
   }
-  if (fV.position == 0) {
+  if (video_request_model.avatar_position == 0) {
     $(".form-flex-horiz").css(redBorderCss);
   }
   if (!formErrors && !submitted) {
-    if (fV.background == "custom" && fV.link == 0) {
+    if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
       setTimeout(send_r, 2000);
     } else {
       send_r();
@@ -669,12 +678,17 @@ function send_r() {
   submitted = true;
 
   console.log("Send request: ");
-  console.log(fV);
+  console.log(video_request_model);
 
   $.ajax({
     url: "https://hook.integromat.com/" + prod,
     type: "POST",
-    data: fV,
+    data: video_request_model,
+    headers: {      
+      "Access-Control-Allow-Origin": "*",
+      "Authorization": `Bearer ${MemberStack.getToken()}`,
+      //"X-API-KEY": "", 
+    },
     success: function (res) {
       $(".w-form-done").show();
       $(".form-wrap-inner").hide();
@@ -690,7 +704,7 @@ function send_preview_request() {
   $.ajax({
     url: "https://hook.integromat.com/" + prod,
     type: "POST",
-    data: fV,
+    data: video_request_model,
     success: function (res) {
       $(".w-form-done").show();
       $(".form-wrap-inner").hide();
@@ -788,8 +802,8 @@ async function uploadAudio() {
       "Content-Type": ff[0].type,
     },
     success: function (data) {
-      fV.audioFilename = audioFileName;
-      fV.audioLink = "gs://" + data.bucket + "/" + data.name;
+      //video_request_model.audio_filename = audioFileName;
+      video_request_model.custom_audio_file = "gs://" + data.bucket + "/" + data.name;
     },
     error: function () {
       alert("Something went wrong, try again!");
@@ -832,8 +846,8 @@ async function handleAudio(event) {
     $("#audioPlayer").attr("src", uploadAudioFile);
     //  document.getElementById("audioElem").load();
     //  _player.onload = function() {
-    fV.script = "custom";
-    fV.script = 0;
+    //video_request_model.script = "custom";
+    video_request_model.script = '';
     $("#customAudio").show();
     $("#deleteAudio").show();
     $("#audioUploadName").html(audioFileName);
@@ -879,17 +893,17 @@ $("#srcAudio").on("click", function () {
 
 $("#deleteAudio").on("click", function () {
   $("#customAudio").hide();
-  fV.voice = 0;
+  video_request_model.voice = 0;
 });
 
 $("#deleteBackground").on("click", function () {
   $("#uploadedImg").attr("src", "");
   $("#uploadedImg").hide();
-  (fV.background = "office-background-FHD.png"),
-    $($(".preview-img-wrap").children("img")[0]).attr("src", fV.previewImgSrc);
+  (video_request_model.background_image = "office-background-FHD.png"),
+    $($(".preview-img-wrap").children("img")[0]).attr("src", video_request_model.preview_image_url);
   $($($(".preview-bg")[0])[0]).css({
     backgroundImage: defaultBackground,
     opacity: 1,
   });
-  fV.voice = 0;
+  video_request_model.voice = 0;
 });
