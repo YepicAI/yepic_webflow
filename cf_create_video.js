@@ -681,7 +681,7 @@ function send_r() {
   console.log(video_request_model);
 
   $.ajax({
-    url: "https://hook.integromat.com/" + prod,
+    url: "http://127.0.0.1:5000/video_request" + prod,
     type: "POST",
     data: video_request_model,
     headers: {      
