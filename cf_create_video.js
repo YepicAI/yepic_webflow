@@ -544,7 +544,6 @@ function loadListenPreview() {
       timeout: 0,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         "Authorization": `Bearer ${MemberStack.getToken()}`,
         "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public api key
       },
@@ -683,11 +682,12 @@ function send_r() {
   $.ajax({
     url: "http://127.0.0.1:5000/video_request",
     type: "POST",
-    data: JSON.stringify(video_request_model),
     headers: {
+      "Content-Type": "application/json",      
       "Authorization": `Bearer ${MemberStack.getToken()}`,
       //"X-API-KEY": "", 
     },
+    data: JSON.stringify(video_request_model),
     success: function (res) {
       $(".w-form-done").show();
       $(".form-wrap-inner").hide();
