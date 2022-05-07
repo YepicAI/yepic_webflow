@@ -25,35 +25,35 @@ var backgroundClass = " ";
 var newClass;
 var selectedActorGender = 'actor-male'
 var video_request_model = {
-  actor_raw                   :'Alex',
-  actor                       :'Alex',
-  voice                       :'',
-  voice_api_provider          :'',
-  voice_provider              :'',
-  script                      :'',
-  custom_audio_file           :'',
-  audio_file                  :'',
-  current_video_most_recent   :'',
-  audio_fea_link              :'',
-  avatar_type                 :'full-body',
-  background_url              :'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png',
-  script_approval             :'',
-  create_video                :'',
-  watermarked                 :'',
-  avatar_size                 :'',
-  avatar_position             :'centre',
-  avatar_circle_background    :'',
-  avatar_circle_background_rim:'',
-  avatar_size_circle          :'',
-  vm_status                   :'',
-  memberstack_id              :'',
-  video_name                  :'',
-  background_image            :'office-background-FHD.png',
-  unique_webpage              :'',
-  created_date                :'',
-  last_modified               :'',
-  download_url                :'',
-  preview_image_url           :'', //'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
+  actor_raw: 'Alex',
+  actor: 'Alex',
+  voice: '',
+  voice_api_provider: '',
+  voice_provider: '',
+  script: '',
+  custom_audio_file: '',
+  audio_file: '',
+  current_video_most_recent: '',
+  audio_fea_link: '',
+  avatar_type: 'full-body',
+  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png',
+  script_approval: '',
+  create_video: '',
+  watermarked: '',
+  avatar_size: '',
+  avatar_position: 'centre',
+  avatar_circle_background: '',
+  avatar_circle_background_rim: '',
+  avatar_size_circle: '',
+  vm_status: '',
+  memberstack_id: '',
+  video_name: '',
+  background_image: 'office-background-FHD.png',
+  unique_webpage: '',
+  created_date: '',
+  last_modified: '',
+  download_url: '',
+  preview_image_url: '', //'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
 }
 
 var actorTypePositionSelection = {
@@ -208,18 +208,18 @@ $(".form-circ-colours").on("click", "#circle-background-select", function () {
 //----------- Functions (voice and actor) -----------
 function cleanUpVoiceSelectionBasedOnActorGender(actorGender) {
   if (actorGender == "actor-female") {
-    $('.voice-female').each(function(i, obj) {
+    $('.voice-female').each(function (i, obj) {
       $(this).parent().parent().removeClass('display-none')
     });
-    $('.voice-male').each(function(i, obj) {
+    $('.voice-male').each(function (i, obj) {
       $(this).parent().parent().addClass('display-none')
     });
   }
   if (actorGender == "actor-male") {
-    $('.voice-male').each(function(i, obj) {
+    $('.voice-male').each(function (i, obj) {
       $(this).parent().parent().removeClass('display-none')
     });
-    $('.voice-female').each(function(i, obj) {
+    $('.voice-female').each(function (i, obj) {
       $(this).parent().parent().addClass('display-none')
     });
   }
@@ -258,13 +258,13 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 
 //----------- LANGUAGE selection -----------
 $(".cv-lang-radio").on("click", function () {
-  setTimeout(function(){
+  setTimeout(function () {
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
   }, 100);
-  setTimeout(function(){
+  setTimeout(function () {
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
   }, 800);
-  setTimeout(function(){
+  setTimeout(function () {
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
   }, 1200);
 });
@@ -332,17 +332,17 @@ async function isEmailVerified(id) {
   }
   console.log("user id: " + id)
   try {
-      result = await $.ajax({
-          url: "https://hook.integromat.com/" + "l9zpmiqwiliash3j77wb7urvmlonuv4h",
-          type: 'POST',
-          data: data
-      });
-      console.log("Is user verified?: ");
-      console.log(result);
-      return result;
+    result = await $.ajax({
+      url: "https://hook.integromat.com/" + "l9zpmiqwiliash3j77wb7urvmlonuv4h",
+      type: 'POST',
+      data: data
+    });
+    console.log("Is user verified?: ");
+    console.log(result);
+    return result;
   } catch (error) {
-      console.log("Error while getting data to integromat: ");
-      console.error(error);
+    console.log("Error while getting data to integromat: ");
+    console.error(error);
   }
 }
 
@@ -353,16 +353,16 @@ function reSendEmailVerification() {
   }
   console.log("user id: " + video_request_model.memberstack_id)
   try {
-      result = $.ajax({
-          url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
-          type: 'POST',
-          data: data
-      });
-      console.log("Verification email resent");
-      return result;
+    result = $.ajax({
+      url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
+      type: 'POST',
+      data: data
+    });
+    console.log("Verification email resent");
+    return result;
   } catch (error) {
-      console.log("Error while re-sending verification email");
-      console.error(error);
+    console.log("Error while re-sending verification email");
+    console.error(error);
   }
 }
 
@@ -484,22 +484,22 @@ async function start_move_background_to_private_cloud_function(image_name) {
   let result;
   console.log("Moving to another bucket started" + image_name);
   try {
-      result = await $.ajax({
-          url: "https://europe-west2-yepicai-backend.cloudfunctions.net/public_to_private",
-          type: 'POST',
-          crossDomain: true,
-          data: JSON.stringify({"blob_name" : image_name}),
-          contentType: "application/json",
-          dataType: "json",
-          headers: {
-            'Access-Control-Allow-Origin': ['https://yepic-ai-new.webflow.io', 'https://www.yepic.ai'],
-          }
-      });
-      console.log("Data successfully received: ");
-      return result;
+    result = await $.ajax({
+      url: "https://europe-west2-yepicai-backend.cloudfunctions.net/public_to_private",
+      type: 'POST',
+      crossDomain: true,
+      data: JSON.stringify({ "blob_name": image_name }),
+      contentType: "application/json",
+      dataType: "json",
+      headers: {
+        'Access-Control-Allow-Origin': ['https://yepic-ai-new.webflow.io', 'https://www.yepic.ai'],
+      }
+    });
+    console.log("Data successfully received: ");
+    return result;
   } catch (error) {
-      console.log("Error while executing script: ");
-      console.error(error);
+    console.log("Error while executing script: ");
+    console.error(error);
   }
 }
 
@@ -507,7 +507,7 @@ async function start_move_background_to_private_cloud_function(image_name) {
 var audioElement = document.createElement('audio');
 setListenButtonState("stopped");
 
-function setListenButtonState(state){
+function setListenButtonState(state) {
   if (state == "stopped") {
     console.log("stopped state");
     listenButtonStatus = "stopped";
@@ -536,37 +536,37 @@ function loadListenPreview() {
     audioElement.play();
 
   } else {
-  console.log("Sending call to generate and play listen preview");
-  var settings = {
-    url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
-    method: "POST",
-    crossDomain: true,
-    timeout: 0,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Authorization": `Bearer ${MemberStack.getToken()}`,
-      "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public api key
-    },
-    data: JSON.stringify(video_request_model),
-  };
-  console.log("Ajax call: ");
+    console.log("Sending call to generate and play listen preview");
+    var settings = {
+      url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
+      method: "POST",
+      crossDomain: true,
+      timeout: 0,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Authorization": `Bearer ${MemberStack.getToken()}`,
+        "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public api key
+      },
+      data: JSON.stringify(video_request_model),
+    };
+    console.log("Ajax call: ");
 
-  $.ajax(settings).done(function (response) { 
-    audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
-    audioElement.setAttribute('src', response.signed_url);
-    setListenButtonState("playing");
-    audioElement.play();
+    $.ajax(settings).done(function (response) {
+      audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
+      audioElement.setAttribute('src', response.signed_url);
+      setListenButtonState("playing");
+      audioElement.play();
     });
   }
 }
 
-audioElement.addEventListener('ended', function() {
+audioElement.addEventListener('ended', function () {
   setListenButtonState("stopped");
   audioElement.currentTime = 0;
 });
 
-$("#previewPlayBtn").unbind().click(function() {
+$("#previewPlayBtn").unbind().click(function () {
   console.log("click event on listen")
   video_request_model.script = $("#video-script").val();
   if (video_request_model === undefined || video_request_model === null || video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice === '' || video_request_model.script === undefined || video_request_model.script === null || video_request_model.script === '') {
@@ -684,7 +684,7 @@ function send_r() {
     url: "http://127.0.0.1:5000/video_request",
     type: "POST",
     data: video_request_model,
-    headers: {      
+    headers: {
       "Access-Control-Allow-Origin": "*",
       "Authorization": `Bearer ${MemberStack.getToken()}`,
       //"X-API-KEY": "", 
