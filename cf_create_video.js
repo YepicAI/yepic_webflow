@@ -683,9 +683,8 @@ function send_r() {
   $.ajax({
     url: "http://127.0.0.1:5000/video_request",
     type: "POST",
-    data: video_request_model,
+    data: JSON.stringify(video_request_model),
     headers: {
-      "Access-Control-Allow-Origin": "*",
       "Authorization": `Bearer ${MemberStack.getToken()}`,
       //"X-API-KEY": "", 
     },
