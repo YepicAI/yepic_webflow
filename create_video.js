@@ -577,7 +577,7 @@ const borderCss = {
         console.log(response);
         
     });
-  }
+  }}
   
   audioElement.addEventListener('ended', function() {
     setListenButtonState("stopped");
