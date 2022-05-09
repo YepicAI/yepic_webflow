@@ -19,7 +19,7 @@ const borderCss = {
   var stateChanged = false;
   var previewDisabled = true;
   var scriptLengthOk = false;
-  var textCounterVariable;
+  var textCounterVariable = 4000;
   var defaultBackground = "url(https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/607d6b85eba5a8278fce538a_office-background-FHD.png)";
   var VL = {};
   var backgroundClass = " ";
@@ -372,8 +372,10 @@ const borderCss = {
 
   function initializeTextCounterVariable() {
     if (fV.membershipTypeId == "612767d60729f2000402c481" || fV.membershipTypeId == "61a548c958f6f200043af22d" || fV.membershipTypeId == "6137a90f266a3f0004c23349") {
+      console.log("Set to 1000");
       textCounterVariable == 1000;
     } else {
+      console.log("Set to 1000");
       textCounterVariable == 4000;
     }
   }
@@ -560,7 +562,8 @@ const borderCss = {
       }).fail(function (response) {
         console.log("fail");
         console.log(response);
-        
+        setListenButtonState("stopped");
+        audioElement.currentTime = 0;
     });
   }}
   
@@ -723,6 +726,8 @@ const borderCss = {
   // TEXT COUNTER
   $("#video-script").keyup(function () {
     $("#video-script").css({ borderColor: "#bccce5" });
+    console.log("Current value:");
+    console.log(textCounterVariable)
     textCounter("video-script", "counter", textCounterVariable);
   });
   function textCounter(field, field2, maxlimit) {
