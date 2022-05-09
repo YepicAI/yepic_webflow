@@ -519,6 +519,7 @@ const borderCss = {
   }
   
   function loadListenPreview() {
+    $("#cv-listen-error").css("display", "none");
     compositeAudioKey = fV.voice_api_provider + fV.voice_provider + fV.voice + fV.script;
     console.log(audioPreviewLocalStorage[compositeAudioKey])
   
@@ -555,13 +556,26 @@ const borderCss = {
     $.ajax(settings).done(function (response) { 
       console.log("success");
       console.log(response);
-      audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
-      audioElement.setAttribute('src', response.signed_url);
-      setListenButtonState("playing");
-      audioElement.play();
+      if (response.signed_url == null || response.signed_url == undefined) {
+        $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
+        setListenButtonState("stopped");
+        audioElement.currentTime = 0;
+        $("#cv-listen-error").css("display", "block");
+      } else {
+        audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
+        audioElement.setAttribute('src', response.signed_url);
+        setListenButtonState("playing");
+        audioElement.play();
+      }
       }).fail(function (response) {
         console.log("fail");
         console.log(response);
+        if (response.status == 400) {
+          $("#cv-listen-error").text("Obscene language detected, please rewrite your script or contact support");
+        } else {
+          $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
+        }
+        $("#cv-listen-error").css("display", "block");
         setListenButtonState("stopped");
         audioElement.currentTime = 0;
     });
@@ -726,8 +740,6 @@ const borderCss = {
   // TEXT COUNTER
   $("#video-script").keyup(function () {
     $("#video-script").css({ borderColor: "#bccce5" });
-    console.log("Current value:");
-    console.log(textCounterVariable)
     textCounter("video-script", "counter", textCounterVariable);
   });
   function textCounter(field, field2, maxlimit) {
