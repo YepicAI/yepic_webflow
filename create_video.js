@@ -385,6 +385,7 @@ const borderCss = {
     InitializeSelections();
     cleanUpVoiceSelectionBasedOnActorGender('actor-male');
     InitializeIsUserVerified()
+    $("#cv-listen-error").css("display", "none");
   }
   setTimeout(startUpSelection, 1000);
   
