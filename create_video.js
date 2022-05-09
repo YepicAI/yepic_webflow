@@ -351,6 +351,7 @@ function reSendEmailVerification() {
 
 $(".popup-email-verify-buttons").on("click", function () {
   reSendEmailVerification();
+  $("#cv-verify-email-popup").css("display", "none");
 });
 
 async function InitializeIsUserVerified() {
@@ -543,6 +544,9 @@ function loadListenPreview() {
   console.log("Ajax call: ");
 
   $.ajax(settings).done(function (response) { 
+    console.log(response)
+
+
     audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
     audioElement.setAttribute('src', response.signed_url);
     setListenButtonState("playing");
