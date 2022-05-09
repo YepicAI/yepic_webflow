@@ -550,21 +550,6 @@ const borderCss = {
       }),
     };
     console.log("Ajax call: ");
-
-    $.ajax({
-      url: "https://hook.integromat.com/" + prod,
-      type: "POST",
-      data: fV,
-      success: function (res) {
-        $(".w-form-done").show();
-        $(".form-wrap-inner").hide();
-      },
-      error: function (err) {
-        submitted = false;
-        $(".w-form-fail").show();
-      },
-    });
-  
     $.ajax(settings).done(function (response) { 
       console.log("success");
       console.log(response);
@@ -592,9 +577,6 @@ const borderCss = {
       console.log(fV);
       return;
     }
-    $(".cv-success-wrapper").css("display", "none");
-    $("#wf-form-Create-Video").css("display", "block");
-    
     if (listenButtonStatus == "stopped") {
       console.log("Was in a stopped state so start loading: ")
       setListenButtonState("loading");
