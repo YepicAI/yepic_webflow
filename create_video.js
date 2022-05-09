@@ -592,6 +592,9 @@ const borderCss = {
       console.log(fV);
       return;
     }
+    $(".cv-success-wrapper").css("display", "none");
+    $("#wf-form-Create-Video").css("display", "block");
+    
     if (listenButtonStatus == "stopped") {
       console.log("Was in a stopped state so start loading: ")
       setListenButtonState("loading");
