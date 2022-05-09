@@ -19,6 +19,7 @@ const borderCss = {
   var stateChanged = false;
   var previewDisabled = true;
   var scriptLengthOk = false;
+  var textCounterVariable;
   var defaultBackground = "url(https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/607d6b85eba5a8278fce538a_office-background-FHD.png)";
   var VL = {};
   var backgroundClass = " ";
@@ -368,6 +369,14 @@ const borderCss = {
       });
     }
   }
+
+  function initializeTextCounterVariable() {
+    if (fV.membershipTypeId == "612767d60729f2000402c481" || fV.membershipTypeId == "61a548c958f6f200043af22d" || fV.membershipTypeId == "6137a90f266a3f0004c23349") {
+      textCounterVariable == 1000;
+    } else {
+      textCounterVariable == 4000;
+    }
+  }
   
   function startUpSelection() {
     InitializeActorPositionAndTypeSelection();
@@ -509,8 +518,6 @@ const borderCss = {
   
   function loadListenPreview() {
     compositeAudioKey = fV.voice_api_provider + fV.voice_provider + fV.voice + fV.script;
-  
-    console.log("test");
     console.log(audioPreviewLocalStorage[compositeAudioKey])
   
     if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
@@ -543,16 +550,33 @@ const borderCss = {
       }),
     };
     console.log("Ajax call: ");
+
+    $.ajax({
+      url: "https://hook.integromat.com/" + prod,
+      type: "POST",
+      data: fV,
+      success: function (res) {
+        $(".w-form-done").show();
+        $(".form-wrap-inner").hide();
+      },
+      error: function (err) {
+        submitted = false;
+        $(".w-form-fail").show();
+      },
+    });
   
     $.ajax(settings).done(function (response) { 
-
-      console.log(response)
+      console.log("success");
+      console.log(response);
       audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
       audioElement.setAttribute('src', response.signed_url);
       setListenButtonState("playing");
       audioElement.play();
-      });
-    }
+      }).fail(function (response) {
+        console.log("fail");
+        console.log(response);
+        
+    });
   }
   
   audioElement.addEventListener('ended', function() {
@@ -714,7 +738,7 @@ const borderCss = {
   // TEXT COUNTER
   $("#video-script").keyup(function () {
     $("#video-script").css({ borderColor: "#bccce5" });
-    textCounter("video-script", "counter", 1000);
+    textCounter("video-script", "counter", textCounterVariable);
   });
   function textCounter(field, field2, maxlimit) {
     var textField = document.getElementById(field);
