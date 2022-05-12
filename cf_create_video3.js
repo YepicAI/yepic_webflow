@@ -97,6 +97,6 @@ window.addEventListener("load", async (e) => {
             console.log(t);
             video_request_model.actor = t.getAttribute('data-actor');
             console.log(video_request_model.actor);
-        });
+        }, true);
     }
 });
