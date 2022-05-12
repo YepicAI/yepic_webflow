@@ -95,7 +95,7 @@ window.addEventListener("load", async (e) => {
         actor_select_buttons[i].addEventListener("click", async (e) => {
             t = e.currentTarget;
             video_request_model.actor = t.getAttribute('data-actor');
-        }, true);
+        });
     }
     
     var voice_select_buttons = document.querySelectorAll('div[data-voice][data-voice-provider][data-voice-api-provider].form-voice');
@@ -106,7 +106,7 @@ window.addEventListener("load", async (e) => {
             video_request_model.voice              = t.getAttribute('data-voice');
             video_request_model.voice_provider     = t.getAttribute('data-voice-provider');
             video_request_model.voice_api_provider = t.getAttribute('data-voice-api-provider');
-        }, true);
+        });
     }
 
 });
