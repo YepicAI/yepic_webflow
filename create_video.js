@@ -533,15 +533,14 @@ const borderCss = {
     } else {
     console.log("Sending call to generate and play listen preview");
     var settings = {
-      url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
+      url: "https://app-vktictsuea-nw.a.run.app/tts_request",
+      //url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
       method: "POST",
       crossDomain: true,
       timeout: 0,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         "Authorization": `Bearer ${MemberStack.getToken()}`,
-        "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public key
       },
       data: JSON.stringify({
         voice: fV.voice,
