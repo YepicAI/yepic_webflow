@@ -25,35 +25,33 @@ var backgroundClass = " ";
 var newClass;
 var selectedActorGender = 'actor-male'
 var video_request_model = {
-  actor_raw: 'Alex',
-  actor: 'Alex',
-  voice: '',
-  voice_api_provider: '',
-  voice_provider: '',
-  script: '',
-  custom_audio_file: '',
-  audio_file: '',
-  current_video_most_recent: '',
-  audio_fea_link: '',
-  avatar_type: 'full-body',
-  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png',
-  script_approval: '',
-  create_video: '',
-  watermarked: '',
-  avatar_size: '',
-  avatar_position: 'centre',
-  avatar_circle_background: '',
-  avatar_circle_background_rim: '',
-  avatar_size_circle: '',
-  vm_status: '',
-  memberstack_id: '',
-  video_name: '',
-  background_image: 'office-background-FHD.png',
-  unique_webpage: '',
-  created_date: '',
-  last_modified: '',
-  download_url: '',
-  preview_image_url: '', //'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
+  actor: 'Alex', // submit from create video page
+  voice: '', // submit from create video page 
+  voice_api_provider: '', // submit from create video page
+  voice_provider: '', // submit from create video page
+  script: '', // submit from create video page
+  custom_audio_file: '', // if user submitted a custom audio upload
+  audio_file: '', // backend generated - for gallery
+  current_video_most_recent: '', // backend generated - for gallery
+  audio_fea_link: '', // backend only
+  avatar_type: 'full-body', // submit from create video page
+  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png', // submit from create video page
+  script_approval: '', // backend generated - for gallery
+  create_video: '', // backend generated - for gallery
+  watermarked: '', // backend generated - for gallery
+  avatar_size: '', // submit from create video page
+  avatar_position: 'centre', // submit from create video page
+  avatar_circle_background: '', // submit from create video page
+  avatar_circle_background_rim: '', // submit from create video page
+  avatar_size_circle: '', // submit from create video page
+  vm_status: '', // backend generated for debugging only
+  memberstack_id: '', // taken from JWT token
+  video_name: '', // submit from create video page
+  unique_webpage: '', // backend generated - for gallery
+  date_created: '', // backend generated - for gallery
+  date_modified: '', // not used by frontend
+  download_url: '', // backend generated - for gallery
+  preview_image_url: '', // not currently used e.g. 'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
 }
 
 var actorTypePositionSelection = {
@@ -538,14 +536,13 @@ function loadListenPreview() {
   } else {
     console.log("Sending call to generate and play listen preview");
     var settings = {
-      url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
+      url: "https://app-vktictsuea-nw.a.run.app/tts_request", //"https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
       method: "POST",
       crossDomain: true,
       timeout: 0,
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${MemberStack.getToken()}`,
-        "X-API-KEY": "220cde650fc5d35c324077af04a223f1", // public api key
       },
       data: JSON.stringify(video_request_model),
     };
@@ -680,30 +677,13 @@ function send_r() {
   console.log(video_request_model);
 
   $.ajax({
-    url: "http://127.0.0.1:5000/video_request",
+    url: "https://app-vktictsuea-nw.a.run.app/video_request",
     type: "POST",
     headers: {
       "Content-Type": "application/json",      
       "Authorization": `Bearer ${MemberStack.getToken()}`,
-      //"X-API-KEY": "", 
     },
     data: JSON.stringify(video_request_model),
-    success: function (res) {
-      $(".w-form-done").show();
-      $(".form-wrap-inner").hide();
-    },
-    error: function (err) {
-      submitted = false;
-      $(".w-form-fail").show();
-    },
-  });
-}
-
-function send_preview_request() {
-  $.ajax({
-    url: "https://hook.integromat.com/" + prod,
-    type: "POST",
-    data: video_request_model,
     success: function (res) {
       $(".w-form-done").show();
       $(".form-wrap-inner").hide();
