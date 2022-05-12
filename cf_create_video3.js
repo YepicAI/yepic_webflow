@@ -94,7 +94,9 @@ window.addEventListener("load", async (e) => {
     for (let i = 0; i < actor_select_buttons.length; i++) {
         actor_select_buttons[i].addEventListener("click", async (e) => {
             t = e.target;
+            console.log(t);
             video_request_model.actor = t.getAttribute('data-actor');
+            console.log(video_request_model.actor);
         });
     }
 });
