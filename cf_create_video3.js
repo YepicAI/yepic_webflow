@@ -89,24 +89,53 @@ window.addEventListener("load", async (e) => {
         await submit_video_request();
     });
 
-    var actor_select_buttons = document.querySelectorAll('#actor-selection a[data-actor]');
+    // capture avatar selections
+    var selection = document.querySelectorAll('#actor-selection a[data-actor]');
+    if (selection !== undefined && selection !== null) {
+        for (let i = 0; i < selection.length; i++) {
+            selection[i].addEventListener("click", async (e) => {
+                t = e.currentTarget;
+                video_request_model.actor = t.getAttribute('data-actor');
+            });
+        };
+    };
     
-    for (let i = 0; i < actor_select_buttons.length; i++) {
-        actor_select_buttons[i].addEventListener("click", async (e) => {
-            t = e.currentTarget;
-            video_request_model.actor = t.getAttribute('data-actor');
-        });
-    }
-    
-    var voice_select_buttons = document.querySelectorAll('div[data-voice][data-voice-provider][data-voice-api-provider].form-voice');
+    // capture voice selections
+    var selection = document.querySelectorAll('div[data-voice][data-voice-provider][data-voice-api-provider].form-voice');
+    if (selection !== undefined && selection !== null) {
+        for (let i = 0; i < selection.length; i++) {
+            selection[i].addEventListener("click", async (e) => {
+                t                                      = e.currentTarget;
+                video_request_model.voice              = t.getAttribute('data-voice');
+                video_request_model.voice_provider     = t.getAttribute('data-voice-provider');
+                video_request_model.voice_api_provider = t.getAttribute('data-voice-api-provider');
+            });
+        };
+    };
 
-    for (let i = 0; i < voice_select_buttons.length; i++) {
-        voice_select_buttons[i].addEventListener("click", async (e) => {
-            t                                      = e.currentTarget;
-            video_request_model.voice              = t.getAttribute('data-voice');
-            video_request_model.voice_provider     = t.getAttribute('data-voice-provider');
-            video_request_model.voice_api_provider = t.getAttribute('data-voice-api-provider');
-        });
-    }
+    // capture avatar position selections
+    var selection = document.querySelectorAll('.actor-pos-wrap a[data-position]');
+    if (selection !== undefined && selection !== null) {
+        for (let i = 0; i < selection.length; i++) {
+            selection[i].addEventListener("click", async (e) => {
+                t                                      = e.currentTarget;
+                video_request_model.avatar_position    = t.getAttribute('data-position');
+                video_request_model.avatar_type        = 'full-body'; // todo
+                video_request_model.avatar_type        = 'circle'; // todo
+            });
+        };
+    };
+
+    // capture background selections
+    var selection = document.querySelectorAll('div#background-select[data-background].form-tab-bg');
+    if (selection !== undefined && selection !== null) {
+        for (let i = 0; i < selection.length; i++) {
+            selection[i].addEventListener("click", async (e) => {
+                t                                     = e.currentTarget;
+                video_request_model.background_url    = t.getAttribute('data-background');
+            });
+        };
+    };
+
 
 });
