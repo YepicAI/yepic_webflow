@@ -19,6 +19,7 @@ var submitted = false;
 var stateChanged = false;
 var previewDisabled = true;
 var scriptLengthOk = false;
+var textCounterVariable = 4000;
 var defaultBackground = "url(https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/607d6b85eba5a8278fce538a_office-background-FHD.png)";
 var VL = {};
 var backgroundClass = " ";
@@ -563,10 +564,30 @@ function loadListenPreview() {
     console.log("Ajax call: ");
 
     $.ajax(settings).done(function (response) {
-      audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
-      audioElement.setAttribute('src', response.signed_url);
-      setListenButtonState("playing");
-      audioElement.play();
+      console.log("success");
+      console.log(response);
+      if (response.signed_url == null || response.signed_url == undefined) {
+        $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
+        setListenButtonState("stopped");
+        audioElement.currentTime = 0;
+        $("#cv-listen-error").css("display", "block");
+      } else {
+        audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
+        audioElement.setAttribute('src', response.signed_url);
+        setListenButtonState("playing");
+        audioElement.play();
+      }
+    }).fail(function (response) {
+      console.log("fail");
+      console.log(response);
+      if (response.status == 400) {
+        $("#cv-listen-error").text("Obscene language detected, please rewrite your script or contact support");
+      } else {
+        $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
+      }
+      $("#cv-listen-error").css("display", "block");
+      setListenButtonState("stopped");
+      audioElement.currentTime = 0;
     });
   }
 }
@@ -691,7 +712,7 @@ function send_r() {
   console.log(video_request_model);
 
   $.ajax({
-    url: "https://app-vktictsuea-nw.a.run.app/video_request",
+    url: "https://app-vktictsuea-nw.a.run.app/video_request", //url: "https://hook.integromat.com/" + prod,
     type: "POST",
     headers: {
       "Content-Type": "application/json",      
@@ -718,7 +739,7 @@ $(".form-name-wrap").keyup(function () {
 // TEXT COUNTER
 $("#video-script").keyup(function () {
   $("#video-script").css({ borderColor: "#bccce5" });
-  textCounter("video-script", "counter", 1000);
+  textCounter("video-script", "counter", textCounterVariable);
 });
 function textCounter(field, field2, maxlimit) {
   var textField = document.getElementById(field);
@@ -795,7 +816,7 @@ async function uploadAudio() {
       "Content-Type": ff[0].type,
     },
     success: function (data) {
-      //video_request_model.audio_filename = audioFileName;
+      video_request_model.audio_filename = audioFileName;
       video_request_model.custom_audio_file = "gs://" + data.bucket + "/" + data.name;
     },
     error: function () {
@@ -839,8 +860,7 @@ async function handleAudio(event) {
     $("#audioPlayer").attr("src", uploadAudioFile);
     //  document.getElementById("audioElem").load();
     //  _player.onload = function() {
-    //video_request_model.script = "custom";
-    video_request_model.script = '';
+    video_request_model.script = ''; //"custom";
     $("#customAudio").show();
     $("#deleteAudio").show();
     $("#audioUploadName").html(audioFileName);
