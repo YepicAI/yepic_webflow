@@ -89,14 +89,24 @@ window.addEventListener("load", async (e) => {
         await submit_video_request();
     });
 
-    actor_select_buttons = document.querySelectorAll('#actor-selection a[data-actor]');
+    var actor_select_buttons = document.querySelectorAll('#actor-selection a[data-actor]');
     
     for (let i = 0; i < actor_select_buttons.length; i++) {
         actor_select_buttons[i].addEventListener("click", async (e) => {
-            t = e.target;
-            console.log(t);
+            t = e.currentTarget;
             video_request_model.actor = t.getAttribute('data-actor');
-            console.log(video_request_model.actor);
-        }, true);
+        }); // ,true});
     }
+    
+    var voice_select_buttons = document.querySelectorAll('div[data-voice][data-voice-provider][data-voice-api-provider].form-voice');
+
+    for (let i = 0; i < voice_select_buttons.length; i++) {
+        voice_select_buttons[i].addEventListener("click", async (e) => {
+            t = e.currentTarget;
+            video_request_model.voice = t.getAttribute('data-voice');
+            video_request_model.voice_provider = t.getAttribute('data-voice-provider');
+            video_request_model.voice_api_provider = t.getAttribute('data-voice-api-provider');
+        }); // ,true});
+    }
+
 });
