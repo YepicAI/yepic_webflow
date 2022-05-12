@@ -133,6 +133,10 @@ window.addEventListener("load", async (e) => {
             selection[i].addEventListener("click", async (e) => {
                 t                                     = e.currentTarget;
                 video_request_model.background_url    = t.getAttribute('data-background');
+                q = document.querySelector('div.preview div.preview-bg');
+                
+                q.style.opacity = 1;
+                q.style.backgroundImage = `url('${video_request_model.background_url}')`;
             });
         };
     };
