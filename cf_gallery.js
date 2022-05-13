@@ -90,7 +90,7 @@ async function get_video_gallery() {
     //console.log(result.status);
     //console.log(result.video_gallery);
 
-    if (result.status !== 'success') return;
+    if (result.status !== 'success' && result.response_status !== 'success') return;
 
     video_gallery_result = result;
 
