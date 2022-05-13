@@ -522,8 +522,8 @@ async function start_move_background_to_private_cloud_function(image_name) {
 }
 
 // ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
-var audioElement = document.createElement('audio');
 var audio_preview_button_state = "";
+var audioElement = document.createElement('audio');
 
 audioElement.addEventListener("ended", async (e) => {
   await audio_preview_button_update_state("stopped");
@@ -553,7 +553,7 @@ async function audio_preview_button_update_state(state) {
 async function notify_audio_error(error_message) {
   $("#cv-listen-error").text(error_message);
   $("#cv-listen-error").css("display", "block");
-  audio_preview_button_update_state("stopped");
+  await audio_preview_button_update_state("stopped");
   audioElement.currentTime = 0;
 }
 
@@ -564,6 +564,7 @@ async function notify_audio_error_reset() {
 async function loadListenPreview() {
   // hide error message
   await notify_audio_error_reset();
+  await audio_preview_button_update_state("loading");
 
   // template error messages
   var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
@@ -576,7 +577,7 @@ async function loadListenPreview() {
   if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
     console.log("Audio cached locally: " + audioPreviewLocalStorage[compositeAudioKey]);
     audioElement.setAttribute("src", audioPreviewLocalStorage[compositeAudioKey]);
-    audio_preview_button_update_state("playing");
+    await audio_preview_button_update_state("playing");
     audioElement.play();
     return;
   }
@@ -602,7 +603,7 @@ async function loadListenPreview() {
     if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
       audioPreviewLocalStorage[compositeAudioKey] = response_json.signed_url;
       audioElement.setAttribute("src", response_json.signed_url);
-      audio_preview_button_update_state("playing");
+      await audio_preview_button_update_state("playing");
       audioElement.play();
       return;
     }
@@ -614,7 +615,7 @@ async function loadListenPreview() {
   }
 
   // this only executes if there was an error
-  notify_audio_error(moderator_blocked ? error_moderation : error_connection);
+  await notify_audio_error(moderator_blocked ? error_moderation : error_connection);
 }
 
 
@@ -643,7 +644,7 @@ async function loadListenPreview() {
 // });
 
 window.addEventListener("load", async (e) => {
-  audio_preview_button_update_state("stopped");
+  await audio_preview_button_update_state("stopped");
 
   // select audio preview button
   var audio_preview_button = document.getElementById('previewPlayBtn');
@@ -662,25 +663,25 @@ window.addEventListener("load", async (e) => {
     video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '' ||
     video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') 
     {
-      notify_audio_error("Please select an AI voice first.");
+      await notify_audio_error("Please select an AI voice first.");
       return;
     }
     
     if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') {
-      notify_audio_error("Please write a script first.");
+      await notify_audio_error("Please write a script first.");
       return;
     }
 
     // when button clicked in audio preview stopped state:
     if (audio_preview_button_state == "stopped") {
-      audio_preview_button_update_state("loading");
+      
       await loadListenPreview();
       return;
     }
 
     // when button clicked in audio preview playing state:
     if (audio_preview_button_state == "playing") {
-      audio_preview_button_update_state("stopped");
+      await audio_preview_button_update_state("stopped");
       audioElement.pause();
       audioElement.currentTime = 0;
       return;
@@ -773,7 +774,7 @@ function send_request() {
     if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
       setTimeout(send_r, 2000);
     } else {
-      submit_video_request();
+      (async () => submit_video_request())();
     }
     return false;
   }
