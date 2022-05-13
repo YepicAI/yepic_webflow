@@ -535,7 +535,7 @@ function setListenButtonState(state) {
   }
 }
 
-function loadListenPreview() {
+async function loadListenPreview() {
   // hide error message
   $("#cv-listen-error").css("display", "none");
   
@@ -576,7 +576,7 @@ function loadListenPreview() {
 
     if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
       audioPreviewLocalStorage[compositeAudioKey] = response_json.signed_url;
-      audioElement.setAttribute('src', response_json.signed_url);
+      audioElement.setAttribute("src", response_json.signed_url);
       setListenButtonState("playing");
       audioElement.play();
     }
@@ -601,7 +601,7 @@ audioElement.addEventListener('ended', function () {
   audioElement.currentTime = 0;
 });
 
-$("#previewPlayBtn").unbind().click(function () {
+$("#previewPlayBtn").unbind().click(async function () {
   console.log("click event on listen")
   video_request_model.script = $("#video-script").val();
   if (video_request_model === undefined || video_request_model === null || video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice === '' || video_request_model.script === undefined || video_request_model.script === null || video_request_model.script === '') {
@@ -612,7 +612,7 @@ $("#previewPlayBtn").unbind().click(function () {
   if (listenButtonStatus == "stopped") {
     console.log("Was in a stopped state so start loading: ")
     setListenButtonState("loading");
-    loadListenPreview();
+    await loadListenPreview();
   } else if (listenButtonStatus == "loading") {
     console.log("Was in a loading state, so do nothing: ")
   } else if (listenButtonStatus == "playing") {
