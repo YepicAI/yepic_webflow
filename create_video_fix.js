@@ -604,11 +604,10 @@ async function loadListenPreview() {
       audioElement.setAttribute("src", response_json.signed_url);
       audio_preview_button_update_state("playing");
       audioElement.play();
+      return;
     }
-
+    
     moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
-
-    return;
   }
   catch (error) {
     console.log(error);
