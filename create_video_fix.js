@@ -536,60 +536,64 @@ function setListenButtonState(state) {
 }
 
 function loadListenPreview() {
+  // hide error message
   $("#cv-listen-error").css("display", "none");
-  compositeAudioKey = video_request_model.voice_api_provider + video_request_model.voice_provider + video_request_model.voice + video_request_model.script;
+  
+  // template error messages
+  var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
+  var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Please continue to submit your video request to be reviewed by customer services.";
 
-  console.log("test");
-  console.log(audioPreviewLocalStorage[compositeAudioKey])
-
+  // composite key
+  compositeAudioKey = [video_request_model.voice_api_provider,video_request_model.voice_provider,video_request_model.voice,video_request_model.script].join(';');
+  
+  // check for local cache
   if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
-    console.log("Audio already generated: " + audioPreviewLocalStorage[compositeAudioKey]);
-    audioElement.setAttribute('src', audioPreviewLocalStorage[compositeAudioKey]);
+    console.log("Audio cached locally: " + audioPreviewLocalStorage[compositeAudioKey]);
+    audioElement.setAttribute("src", audioPreviewLocalStorage[compositeAudioKey]);
     setListenButtonState("playing");
     audioElement.play();
+    return;
+  }
 
-  } else {
-    console.log("Sending call to generate and play listen preview");
-    var settings = {
-      url: "https://app-vktictsuea-nw.a.run.app/tts_request", //"https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
-      method: "POST",
-      crossDomain: true,
-      timeout: 0,
+  // call audio preview api
+  var url = 'https://app-vktictsuea-nw.a.run.app/tts_request';
+  var moderator_blocked = false;
+
+  try {
+    let response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ video_request_model }),
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${MemberStack.getToken()}`,
       },
-      data: JSON.stringify(video_request_model),
-    };
-    console.log("Ajax call: ");
-
-    $.ajax(settings).done(function (response) {
-      console.log("success");
-      console.log(response);
-      if (response.signed_url == null || response.signed_url == undefined) {
-        $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
-        setListenButtonState("stopped");
-        audioElement.currentTime = 0;
-        $("#cv-listen-error").css("display", "block");
-      } else {
-        audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
-        audioElement.setAttribute('src', response.signed_url);
-        setListenButtonState("playing");
-        audioElement.play();
-      }
-    }).fail(function (response) {
-      console.log("fail");
-      console.log(response);
-      if (response.status == 400) {
-        $("#cv-listen-error").text("Obscene language detected, please rewrite your script or contact support");
-      } else {
-        $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
-      }
-      $("#cv-listen-error").css("display", "block");
-      setListenButtonState("stopped");
-      audioElement.currentTime = 0;
     });
+
+    let response_status = response.status();
+    let response_json = await response.json();
+
+    console.log(response_json);
+
+    if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
+      audioPreviewLocalStorage[compositeAudioKey] = response_json.signed_url;
+      audioElement.setAttribute('src', response_json.signed_url);
+      setListenButtonState("playing");
+      audioElement.play();
+    }
+
+    moderator_blocked = response_json.response_status_message === "content moderator error"  || response_json.response_status_message === "content not accepted";
+    
+    return;
   }
+  catch (error) {
+
+  }
+  
+  // if there is an error
+  $("#cv-listen-error").text(moderator_blocked ? error_moderation : error_connection);
+  $("#cv-listen-error").css("display", "block");
+  setListenButtonState("stopped");
+  audioElement.currentTime = 0;
 }
 
 audioElement.addEventListener('ended', function () {
@@ -715,7 +719,7 @@ function send_r() {
     url: "https://app-vktictsuea-nw.a.run.app/video_request", //url: "https://hook.integromat.com/" + prod,
     type: "POST",
     headers: {
-      "Content-Type": "application/json",      
+      "Content-Type": "application/json",
       "Authorization": `Bearer ${MemberStack.getToken()}`,
     },
     data: JSON.stringify(video_request_model),
