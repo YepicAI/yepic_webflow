@@ -402,8 +402,9 @@ function startUpSelection() {
   InitializeActorPositionAndTypeSelection();
   InitializeSelections();
   cleanUpVoiceSelectionBasedOnActorGender('actor-male');
-  InitializeIsUserVerified()
-  $("#cv-listen-error").css("display", "none");
+  InitializeIsUserVerified();
+  notify_audio_error_reset();
+
 }
 setTimeout(startUpSelection, 1000);
 
@@ -522,33 +523,47 @@ async function start_move_background_to_private_cloud_function(image_name) {
 
 // ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
 var audioElement = document.createElement('audio');
+var audio_preview_button_state = "";
 
-audioElement.addEventListener("ended", function () {
-  setListenButtonState("stopped");
+audioElement.addEventListener("ended", async (e) => {
+  await audio_preview_button_update_state("stopped");
   audioElement.currentTime = 0;
 });
 
-function setListenButtonState(state) {
+async function audio_preview_button_update_state(state) {
   if (state == "stopped") {
-    console.log("stopped state");
-    listenButtonStatus = "stopped";
+    audio_preview_button_state = "stopped";
     $("#previewIcon").removeClass("pause-icon").removeClass("loading-icon").addClass("play-icon");
-  } else if (state == "loading") {
-    console.log("loading state");
-    listenButtonStatus = "loading";
+    return;
+  }
+
+  if (state == "loading") {
+    audio_preview_button_state = "loading";
     $("#previewIcon").removeClass("play-icon").removeClass("pause-icon").addClass("loading-icon")
-  } else if (state == "playing") {
-    console.log("playing state");
-    listenButtonStatus = "playing";
+    return;
+  }
+
+  if (state == "playing") {
+    audio_preview_button_state = "playing";
     $("#previewIcon").removeClass("loading-icon").removeClass("play-icon").addClass("pause-icon")
+    return;
   }
 }
 
+async function notify_audio_error(error_message) {
+  $("#cv-listen-error").text(error_message);
+  $("#cv-listen-error").css("display", "block");
+  audio_preview_button_update_state("stopped");
+  audioElement.currentTime = 0;
+}
 
+async function notify_audio_error_reset() {
+  $("#cv-listen-error").css("display", "none");
+}
 
 async function loadListenPreview() {
   // hide error message
-  $("#cv-listen-error").css("display", "none");
+  await notify_audio_error_reset();
 
   // template error messages
   var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
@@ -561,7 +576,7 @@ async function loadListenPreview() {
   if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
     console.log("Audio cached locally: " + audioPreviewLocalStorage[compositeAudioKey]);
     audioElement.setAttribute("src", audioPreviewLocalStorage[compositeAudioKey]);
-    setListenButtonState("playing");
+    audio_preview_button_update_state("playing");
     audioElement.play();
     return;
   }
@@ -588,7 +603,7 @@ async function loadListenPreview() {
     if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
       audioPreviewLocalStorage[compositeAudioKey] = response_json.signed_url;
       audioElement.setAttribute("src", response_json.signed_url);
-      setListenButtonState("playing");
+      audio_preview_button_update_state("playing");
       audioElement.play();
     }
 
@@ -601,10 +616,7 @@ async function loadListenPreview() {
   }
 
   // if there is an error
-  $("#cv-listen-error").text(moderator_blocked ? error_moderation : error_connection);
-  $("#cv-listen-error").css("display", "block");
-  setListenButtonState("stopped");
-  audioElement.currentTime = 0;
+  notify_audio_error(moderator_blocked ? error_moderation : error_connection);
 }
 
 
@@ -618,13 +630,13 @@ async function loadListenPreview() {
 //     console.log(fV);
 //     return;
 //   }
-//   if (listenButtonStatus == "stopped") {
+//   if (audio_preview_button_state == "stopped") {
 //     console.log("Was in a stopped state so start loading: ")
 //     setListenButtonState("loading");
 //     loadListenPreview();
-//   } else if (listenButtonStatus == "loading") {
+//   } else if (audio_preview_button_state == "loading") {
 //     console.log("Was in a loading state, so do nothing: ")
-//   } else if (listenButtonStatus == "playing") {
+//   } else if (audio_preview_button_state == "playing") {
 //     console.log("Was in a playing state, so stop it: ")
 //     setListenButtonState("stopped");
 //     audioElement.pause();
@@ -633,7 +645,7 @@ async function loadListenPreview() {
 // });
 
 window.addEventListener("load", async (e) => {
-  setListenButtonState("stopped");
+  audio_preview_button_update_state("stopped");
 
   var audio_preview_button = document.getElementById('previewPlayBtn');
 
@@ -651,24 +663,24 @@ window.addEventListener("load", async (e) => {
     if (video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '') return;
     if (video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') return;
     if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') return;
-    
+
     // when button clicked in audio preview stopped state:
-    if (listenButtonStatus == "stopped") {
-      setListenButtonState("loading");
+    if (audio_preview_button_state == "stopped") {
+      audio_preview_button_update_state("loading");
       await loadListenPreview();
       return;
     }
 
     // when button clicked in audio preview playing state:
-    if (listenButtonStatus == "playing") {
-      setListenButtonState("stopped");
+    if (audio_preview_button_state == "playing") {
+      audio_preview_button_update_state("stopped");
       audioElement.pause();
       audioElement.currentTime = 0;
       return;
     }
 
     // when button clicked in audio preview loading state:
-    if (listenButtonStatus == "loading") {
+    if (audio_preview_button_state == "loading") {
       // todo
       return;
     }
@@ -754,38 +766,46 @@ function send_request() {
     if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
       setTimeout(send_r, 2000);
     } else {
-      send_r();
+      submit_video_request();
     }
     return false;
   }
 }
 
-var prod = "nee3p8cy62in3ph68ckd42wjnopkrove";
-var stagin = "7kl8v392xfycx5qms9vy4d05csufq6ry";
-function send_r() {
+async function submit_video_request() {
+  if (submitted) return;
+  
   submitted = true;
-
-  console.log("Send request: ");
   console.log(video_request_model);
 
-  $.ajax({
-    url: "https://app-vktictsuea-nw.a.run.app/video_request", //url: "https://hook.integromat.com/" + prod,
-    type: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${MemberStack.getToken()}`,
-    },
-    data: JSON.stringify(video_request_model),
-    success: function (res) {
-      $(".w-form-done").show();
-      $(".form-wrap-inner").hide();
-    },
-    error: function (err) {
-      submitted = false;
-      $(".w-form-fail").show();
-    },
-  });
-}
+  var url = 'https://app-vktictsuea-nw.a.run.app/video_request';
+
+  try {
+    let response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(video_request_model),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${MemberStack.getToken()}`,
+      },
+    });
+
+    var result = await response.json();
+    console.log(result);    
+
+    if (response.status === 200) {      
+      document.querySelector(".w-form-done").style.display = 'block';
+      document.querySelector(".form-wrap-inner").style.display = 'none';
+      return;
+    }
+  }
+  catch (error) {
+    console.log(error);
+  }
+
+  submitted = false;
+  document.querySelector(".w-form-fail").style.display = 'none';
+};
 
 // remove red background
 
