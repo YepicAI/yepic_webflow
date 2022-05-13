@@ -588,14 +588,13 @@ async function loadListenPreview() {
   try {
     let response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ video_request_model }),
+      body: JSON.stringify(video_request_model),
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${MemberStack.getToken()}`,
       },
     });
 
-    let response_status = response.status();
     let response_json = await response.json();
 
     console.log(response_json);
@@ -612,10 +611,10 @@ async function loadListenPreview() {
     return;
   }
   catch (error) {
-
+    console.log(error);
   }
 
-  // if there is an error
+  // this only executes if there was an error
   notify_audio_error(moderator_blocked ? error_moderation : error_connection);
 }
 
