@@ -647,10 +647,11 @@ async function loadListenPreview() {
 window.addEventListener("load", async (e) => {
   audio_preview_button_update_state("stopped");
 
+  // select audio preview button
   var audio_preview_button = document.getElementById('previewPlayBtn');
-
   if (audio_preview_button === undefined || audio_preview_button === null) return;
 
+  // add click event listener to audio preview button
   audio_preview_button.addEventListener("click", async (e) => {
     // check model exist
     if (video_request_model === undefined || video_request_model === null) return;
@@ -659,10 +660,18 @@ window.addEventListener("load", async (e) => {
     video_request_model.script = $("#video-script").val();
 
     // check parameters exist
-    if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice.trim() === '') return;
-    if (video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '') return;
-    if (video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') return;
-    if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') return;
+    if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice.trim() === '' ||
+    video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '' ||
+    video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') 
+    {
+      notify_audio_error("Please select an AI voice first.");
+      return;
+    }
+    
+    if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') {
+      notify_audio_error("Please write a script first.");
+      return;
+    }
 
     // when button clicked in audio preview stopped state:
     if (audio_preview_button_state == "stopped") {
@@ -774,7 +783,7 @@ function send_request() {
 
 async function submit_video_request() {
   if (submitted) return;
-  
+
   submitted = true;
   console.log(video_request_model);
 
