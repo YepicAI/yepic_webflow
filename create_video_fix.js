@@ -25,6 +25,7 @@ var VL = {};
 var backgroundClass = " ";
 var newClass;
 var selectedActorGender = 'actor-male';
+
 var video_request_model = {
   actor: 'Alex', // submit from create video page
   voice: '', // submit from create video page 
@@ -54,6 +55,7 @@ var video_request_model = {
   download_url: '', // backend generated - for gallery
   preview_image_url: '', // not currently used e.g. 'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
 };
+
 var actorTypePositionSelection = {
   fullBody: "centre",
   circle: "circle-midcentre",
@@ -458,6 +460,9 @@ function handleFiles() {
 }
 
 function uuid() {
+  var x = crypto.randomUUID();
+  if (x !== undefined && x !== null && x !== '') return x;
+
   return (
     "file-" +
     "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx.".replace(/[xy]/g, function (c) {
@@ -517,7 +522,11 @@ async function start_move_background_to_private_cloud_function(image_name) {
 
 // ---------------------------------------------------- PRESS LISTEN  ------------------------------------------------------------------
 var audioElement = document.createElement('audio');
-setListenButtonState("stopped");
+
+audioElement.addEventListener("ended", function () {
+  setListenButtonState("stopped");
+  audioElement.currentTime = 0;
+});
 
 function setListenButtonState(state) {
   if (state == "stopped") {
@@ -535,17 +544,19 @@ function setListenButtonState(state) {
   }
 }
 
+
+
 async function loadListenPreview() {
   // hide error message
   $("#cv-listen-error").css("display", "none");
-  
+
   // template error messages
   var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
   var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Please continue to submit your video request to be reviewed by customer services.";
 
   // composite key
-  compositeAudioKey = [video_request_model.voice_api_provider,video_request_model.voice_provider,video_request_model.voice,video_request_model.script].join(';');
-  
+  compositeAudioKey = [video_request_model.voice_api_provider, video_request_model.voice_provider, video_request_model.voice, video_request_model.script].join(';');
+
   // check for local cache
   if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
     console.log("Audio cached locally: " + audioPreviewLocalStorage[compositeAudioKey]);
@@ -581,14 +592,14 @@ async function loadListenPreview() {
       audioElement.play();
     }
 
-    moderator_blocked = response_json.response_status_message === "content moderator error"  || response_json.response_status_message === "content not accepted";
-    
+    moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
+
     return;
   }
   catch (error) {
 
   }
-  
+
   // if there is an error
   $("#cv-listen-error").text(moderator_blocked ? error_moderation : error_connection);
   $("#cv-listen-error").css("display", "block");
@@ -596,39 +607,72 @@ async function loadListenPreview() {
   audioElement.currentTime = 0;
 }
 
-audioElement.addEventListener('ended', function () {
-  setListenButtonState("stopped");
-  audioElement.currentTime = 0;
-});
+
+
+
+// $("#previewPlayBtn").unbind().click(function () {
+//   console.log("click event on listen")
+//   fV.script = $("#video-script").val();
+//   if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
+//     console.log("Missing parameter, so do nothing.")
+//     console.log(fV);
+//     return;
+//   }
+//   if (listenButtonStatus == "stopped") {
+//     console.log("Was in a stopped state so start loading: ")
+//     setListenButtonState("loading");
+//     loadListenPreview();
+//   } else if (listenButtonStatus == "loading") {
+//     console.log("Was in a loading state, so do nothing: ")
+//   } else if (listenButtonStatus == "playing") {
+//     console.log("Was in a playing state, so stop it: ")
+//     setListenButtonState("stopped");
+//     audioElement.pause();
+//     audioElement.currentTime = 0;
+//   }
+// });
 
 window.addEventListener("load", async (e) => {
+  setListenButtonState("stopped");
+
   var audio_preview_button = document.getElementById('previewPlayBtn');
-  
+
   if (audio_preview_button === undefined || audio_preview_button === null) return;
-  if (video_request_model === undefined || video_request_model === null) return;
-  if (video_request_model.voice === undefined || video_request_model === null || video_request_model === '') return;
-  if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice === '') return;
-  if (video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider === '') return;
-  if (video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider === '') return;
 
-  video_request_model.script = $("#video-script").val();
+  audio_preview_button.addEventListener("click", async (e) => {
+    // check model exist
+    if (video_request_model === undefined || video_request_model === null) return;
 
-  if (listenButtonStatus == "stopped") {
-    setListenButtonState("loading");
-    await loadListenPreview();
-    return;
-  }
-  
-  if (listenButtonStatus == "playing") {
-    setListenButtonState("stopped");
-    audioElement.pause();
-    audioElement.currentTime = 0;
-    return;
-  }
-  
-  if (listenButtonStatus == "loading") {
-    // todo
-  }
+    // set script
+    video_request_model.script = $("#video-script").val();
+
+    // check parameters exist
+    if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice.trim() === '') return;
+    if (video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '') return;
+    if (video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') return;
+    if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') return;
+    
+    // when button clicked in audio preview stopped state:
+    if (listenButtonStatus == "stopped") {
+      setListenButtonState("loading");
+      await loadListenPreview();
+      return;
+    }
+
+    // when button clicked in audio preview playing state:
+    if (listenButtonStatus == "playing") {
+      setListenButtonState("stopped");
+      audioElement.pause();
+      audioElement.currentTime = 0;
+      return;
+    }
+
+    // when button clicked in audio preview loading state:
+    if (listenButtonStatus == "loading") {
+      // todo
+      return;
+    }
+  });
 });
 
 
