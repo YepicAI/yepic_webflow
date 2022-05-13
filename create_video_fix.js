@@ -601,27 +601,36 @@ audioElement.addEventListener('ended', function () {
   audioElement.currentTime = 0;
 });
 
-$("#previewPlayBtn").unbind().click(async function () {
-  console.log("click event on listen")
+window.addEventListener("load", async (e) => {
+  var audio_preview_button = document.getElementById('previewPlayBtn');
+  
+  if (audio_preview_button === undefined || audio_preview_button === null) return;
+  if (video_request_model === undefined || video_request_model === null) return;
+  if (video_request_model.voice === undefined || video_request_model === null || video_request_model === '') return;
+  if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice === '') return;
+  if (video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider === '') return;
+  if (video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider === '') return;
+
   video_request_model.script = $("#video-script").val();
-  if (video_request_model === undefined || video_request_model === null || video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice === '' || video_request_model.script === undefined || video_request_model.script === null || video_request_model.script === '') {
-    console.log("Missing parameter, so do nothing.")
-    console.log(video_request_model);
-    return;
-  }
+
   if (listenButtonStatus == "stopped") {
-    console.log("Was in a stopped state so start loading: ")
     setListenButtonState("loading");
     await loadListenPreview();
-  } else if (listenButtonStatus == "loading") {
-    console.log("Was in a loading state, so do nothing: ")
-  } else if (listenButtonStatus == "playing") {
-    console.log("Was in a playing state, so stop it: ")
+    return;
+  }
+  
+  if (listenButtonStatus == "playing") {
     setListenButtonState("stopped");
     audioElement.pause();
     audioElement.currentTime = 0;
+    return;
+  }
+  
+  if (listenButtonStatus == "loading") {
+    // todo
   }
 });
+
 
 // ------------------------------------------------- SELECT voice -------------------------------------------------
 function checkListenPreview() {
