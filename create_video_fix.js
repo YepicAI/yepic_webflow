@@ -183,8 +183,8 @@ async function set_circle_background_click_events() {
   });
 }
 
-await set_avatar_position_click_events();
-await set_circle_background_click_events();
+(async () => set_avatar_position_click_events())();
+(async () => set_circle_background_click_events())();
 
 // ------------------------------------------------- SELECT VOICE AND ACTOR -------------------------------------------------
 
@@ -738,7 +738,7 @@ function send_request() {
     //if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
     //setTimeout(send_r, 2000);
     //} else {
-    (async () => submit_video_request())();
+      (async () => submit_video_request())();
     //}
   }
   
