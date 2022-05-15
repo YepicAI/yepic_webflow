@@ -105,35 +105,20 @@ function selectActorPositionAndType(actorPosition, actorType, imageClassName) {
   video_request_model.avatar_type = actorType;
 };
 
-function changeCircleBackground(colorObject) {
+async function changeCircleBackground(colorObject) {
   hexCode = colorObject.attr("data-hexcode");
   video_request_model.avatar_circle_background = "#" + hexCode;
   console.log(video_request_model.avatar_circle_background);
 
-  if (colorObject.hasClass('c1')) {
-    backgroundColorClass = 'c1'
+  class_list = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8'];
+
+  for (let i = 0; i < class_list.length; i++) {
+    if (colorObject.hasClass(class_list[i])) {
+      backgroundColorClass = class_list[i];
+      //break;
+    }
   }
-  if (colorObject.hasClass('c2')) {
-    backgroundColorClass = 'c2'
-  }
-  if (colorObject.hasClass('c3')) {
-    backgroundColorClass = 'c3'
-  }
-  if (colorObject.hasClass('c4')) {
-    backgroundColorClass = 'c4'
-  }
-  if (colorObject.hasClass('c5')) {
-    backgroundColorClass = 'c5'
-  }
-  if (colorObject.hasClass('c6')) {
-    backgroundColorClass = 'c6'
-  }
-  if (colorObject.hasClass('c7')) {
-    backgroundColorClass = 'c7'
-  }
-  if (colorObject.hasClass('c8')) {
-    backgroundColorClass = 'c8'
-  }
+
   $(".form-tab-circle-bg").css({ borderColor: "transparent" });
   colorObject.css(borderCss);
   $("#previewCircImg").removeClass("c1 c2 c3 c4 c5 c6 c7 c8");
@@ -159,51 +144,47 @@ $("#tab-title-circle").click(function () {
   video_request_model.avatar_position = actorTypePositionSelection.circle;
 });
 
-//----------- FULL-BODY selection -----------
-$(".actor-pos-left").click(function () {
-  selectActorPositionAndType(".actor-pos-left", "full-body", "preview-img-left");
-});
-$(".actor-pos-mid").click(function () {
-  selectActorPositionAndType(".actor-pos-mid", "full-body", "preview-img-mid");
-});
-$(".actor-pos-right").click(function () {
-  selectActorPositionAndType(".actor-pos-right", "full-body", "preview-img-right");
-});
+// set avatar_position click events
+async function set_avatar_position_click_events()
+{
+  var items = {
+      ".actor-pos-left"            : ["full-body", "preview-img-left"],
+      ".actor-pos-mid"             : ["full-body", "preview-img-mid"],
+      ".actor-pos-right"           : ["full-body", "preview-img-right"],
+      ".actor-pos-circle-topleft"  : ["circle", "t1"],
+      ".actor-pos-circle-topcentre": ["circle", "t2"],
+      ".actor-pos-circle-topright" : ["circle", "t3"],
+      ".actor-pos-circle-midleft"  : ["circle", "m1"],
+      ".actor-pos-circle-midcentre": ["circle", "m2"],
+      ".actor-pos-circle-midright" : ["circle", "m3"],
+      ".actor-pos-circle-botleft"  : ["circle", "b1"],
+      ".actor-pos-circle-botcentre": ["circle", "b2"],
+      ".actor-pos-circle-botright" : ["circle", "b3"],
+  };
 
-//----------- CIRCLE-BODY selection -----------
-$(".actor-pos-circle-topleft").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-topleft", "circle", "t1");
-});
-$(".actor-pos-circle-topcentre").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-topcentre", "circle", "t2");
-});
-$(".actor-pos-circle-topright").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-topright", "circle", "t3");
-});
-$(".actor-pos-circle-midleft").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-midleft", "circle", "m1");
-});
-$(".actor-pos-circle-midcentre").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-midcentre", "circle", "m2");
-});
-$(".actor-pos-circle-midright").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-midright", "circle", "m3");
-});
-$(".actor-pos-circle-botleft").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-botleft", "circle", "b1");
-});
-$(".actor-pos-circle-botcentre").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-botcentre", "circle", "b2");
-});
-$(".actor-pos-circle-botright").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-botright", "circle", "b3");
-});
+  for (const [key, value] of Object.entries(items)) {
+    const i_key = key;
+    const i_value = value;
+
+    let element = document.querySelector(key);
+
+    element.addEventListener("click", async (e) => {
+      selectActorPositionAndType(i_key, i_value[0], i_value[1]);
+    });    
+  }
+}
 
 //----------- CIRCLE BACKGROUND selection -----------
+async function set_circle_background_click_events() {
+  var element = document.querySelector("#circle-background-select");
 
-$(".form-circ-colours").on("click", "#circle-background-select", function () {
-  changeCircleBackground($(this));
-});
+  element.addEventListener("click", async (e) => {
+    await changeCircleBackground($(this));
+  });
+}
+
+await set_avatar_position_click_events();
+await set_circle_background_click_events();
 
 // ------------------------------------------------- SELECT VOICE AND ACTOR -------------------------------------------------
 
@@ -516,7 +497,6 @@ async function start_move_background_to_private_cloud_function(image_name) {
     console.log("Data successfully received: ");
     return result;
   } catch (error) {
-    console.log("Error while executing script: ");
     console.error(error);
   }
 }
@@ -607,7 +587,7 @@ async function loadListenPreview() {
       audioElement.play();
       return;
     }
-    
+
     moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
   }
   catch (error) {
@@ -617,31 +597,6 @@ async function loadListenPreview() {
   // this only executes if there was an error
   await notify_audio_error(moderator_blocked ? error_moderation : error_connection);
 }
-
-
-
-
-// $("#previewPlayBtn").unbind().click(function () {
-//   console.log("click event on listen")
-//   fV.script = $("#video-script").val();
-//   if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
-//     console.log("Missing parameter, so do nothing.")
-//     console.log(fV);
-//     return;
-//   }
-//   if (audio_preview_button_state == "stopped") {
-//     console.log("Was in a stopped state so start loading: ")
-//     setListenButtonState("loading");
-//     loadListenPreview();
-//   } else if (audio_preview_button_state == "loading") {
-//     console.log("Was in a loading state, so do nothing: ")
-//   } else if (audio_preview_button_state == "playing") {
-//     console.log("Was in a playing state, so stop it: ")
-//     setListenButtonState("stopped");
-//     audioElement.pause();
-//     audioElement.currentTime = 0;
-//   }
-// });
 
 window.addEventListener("load", async (e) => {
   await audio_preview_button_update_state("stopped");
@@ -660,13 +615,12 @@ window.addEventListener("load", async (e) => {
 
     // check parameters exist
     if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice.trim() === '' ||
-    video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '' ||
-    video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') 
-    {
+      video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '' ||
+      video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') {
       await notify_audio_error("Please select an AI voice first.");
       return;
     }
-    
+
     if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') {
       await notify_audio_error("Please write a script first.");
       return;
@@ -674,7 +628,7 @@ window.addEventListener("load", async (e) => {
 
     // when button clicked in audio preview stopped state:
     if (audio_preview_button_state == "stopped") {
-      
+
       await loadListenPreview();
       return;
     }
@@ -738,46 +692,57 @@ function send_request() {
 
   if (video_request_model.avatar_type == "full-body") {
     video_request_model.avatar_circle_background = "";
+    video_request_model.avatar_circle_background_rim = "";
     video_request_model.avatar_size = $("#size").val();
     video_request_model.avatar_size_circle = "";
   }
+
   if (video_request_model.avatar_type == "circle") {
+    video_request_model.avatar_size = $("#size-circle").val();
     video_request_model.avatar_size_circle = $("#size-circle").val();
-    video_request_model.avatar_size = "";
+    video_request_model.avatar_circle_background = "";
+    video_request_model.avatar_circle_background_rim = "#000000";    
   }
 
   if (video_request_model.video_name.length < 1) {
     formErrors = true;
     $(".form-name-wrap").css(redBorderCss);
   }
+
   if (video_request_model.script.length < 3 && video_request_model.voice != "custom" && video_request_model.custom_audio_file != "") {
     formErrors = true;
     $("#video-script").css(redBorderCss);
   }
+
   if (!video_request_model.actor) {
     formErrors = true;
     $(".form-actor-select-wrap").css(redBorderCss);
   }
+
   if (!video_request_model.background_url) {
     formErrors = true;
     $(".form-tab-bg-wrap").css(redBorderCss);
   }
+
   if (video_request_model.voice == "") {
     console.log("no voice selected")
     formErrors = true;
     $(".form-tab-voice-wrap").css(redBorderCss);
   }
+
   if (video_request_model.avatar_position == 0) {
     $(".form-flex-horiz").css(redBorderCss);
   }
+
   if (!formErrors && !submitted) {
-    if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
-      setTimeout(send_r, 2000);
-    } else {
-      (async () => submit_video_request())();
-    }
-    return false;
+    //if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
+    //setTimeout(send_r, 2000);
+    //} else {
+    (async () => submit_video_request())();
+    //}
   }
+  
+  return false;
 }
 
 async function submit_video_request() {
@@ -799,9 +764,9 @@ async function submit_video_request() {
     });
 
     var result = await response.json();
-    console.log(result);    
+    console.log(result);
 
-    if (response.status === 200) {      
+    if (response.status === 200) {
       document.querySelector(".w-form-done").style.display = 'block';
       document.querySelector(".form-wrap-inner").style.display = 'none';
       return;
