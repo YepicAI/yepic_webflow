@@ -192,18 +192,18 @@ $(".form-circ-colours").on("click", "#circle-background-select", function () {
 //----------- Functions (voice and actor) -----------
 function cleanUpVoiceSelectionBasedOnActorGender(actorGender) {
   if (actorGender == "actor-female") {
-    $('.voice-female').each(function(i, obj) {
+    $('.voice-female').each(function (i, obj) {
       $(this).parent().parent().removeClass('display-none')
     });
-    $('.voice-male').each(function(i, obj) {
+    $('.voice-male').each(function (i, obj) {
       $(this).parent().parent().addClass('display-none')
     });
   }
   if (actorGender == "actor-male") {
-    $('.voice-male').each(function(i, obj) {
+    $('.voice-male').each(function (i, obj) {
       $(this).parent().parent().removeClass('display-none')
     });
-    $('.voice-female').each(function(i, obj) {
+    $('.voice-female').each(function (i, obj) {
       $(this).parent().parent().addClass('display-none')
     });
   }
@@ -242,13 +242,13 @@ $(".form-actor-select-wrap").on("click", ".form-actor", function () {
 
 //----------- LANGUAGE selection -----------
 $(".cv-lang-radio").on("click", function () {
-  setTimeout(function(){
+  setTimeout(function () {
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
   }, 100);
-  setTimeout(function(){
+  setTimeout(function () {
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
   }, 800);
-  setTimeout(function(){
+  setTimeout(function () {
     cleanUpVoiceSelectionBasedOnActorGender(selectedActorGender);
   }, 1200);
 });
@@ -316,17 +316,17 @@ async function isEmailVerified(id) {
   }
   console.log("user id: " + id)
   try {
-      result = await $.ajax({
-          url: "https://hook.integromat.com/" + "l9zpmiqwiliash3j77wb7urvmlonuv4h",
-          type: 'POST',
-          data: data
-      });
-      console.log("Is user verified?: ");
-      console.log(result);
-      return result;
+    result = await $.ajax({
+      url: "https://hook.integromat.com/" + "l9zpmiqwiliash3j77wb7urvmlonuv4h",
+      type: 'POST',
+      data: data
+    });
+    console.log("Is user verified?: ");
+    console.log(result);
+    return result;
   } catch (error) {
-      console.log("Error while getting data to integromat: ");
-      console.error(error);
+    console.log("Error while getting data to integromat: ");
+    console.error(error);
   }
 }
 
@@ -337,16 +337,16 @@ function reSendEmailVerification() {
   }
   console.log("user id: " + fV.id)
   try {
-      result = $.ajax({
-          url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
-          type: 'POST',
-          data: data
-      });
-      console.log("Verification email resent");
-      return result;
+    result = $.ajax({
+      url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
+      type: 'POST',
+      data: data
+    });
+    console.log("Verification email resent");
+    return result;
   } catch (error) {
-      console.log("Error while re-sending verification email");
-      console.error(error);
+    console.log("Error while re-sending verification email");
+    console.error(error);
   }
 }
 
@@ -480,22 +480,22 @@ async function start_move_background_to_private_cloud_function(image_name) {
   let result;
   console.log("Moving to another bucket started" + image_name);
   try {
-      result = await $.ajax({
-          url: "https://europe-west2-yepicai-backend.cloudfunctions.net/public_to_private",
-          type: 'POST',
-          crossDomain: true,
-          data: JSON.stringify({"blob_name" : image_name}),
-          contentType: "application/json",
-          dataType: "json",
-          headers: {
-            'Access-Control-Allow-Origin': ['https://yepic-ai-new.webflow.io', 'https://www.yepic.ai'],
-          }
-      });
-      console.log("Data successfully received: ");
-      return result;
+    result = await $.ajax({
+      url: "https://europe-west2-yepicai-backend.cloudfunctions.net/public_to_private",
+      type: 'POST',
+      crossDomain: true,
+      data: JSON.stringify({ "blob_name": image_name }),
+      contentType: "application/json",
+      dataType: "json",
+      headers: {
+        'Access-Control-Allow-Origin': ['https://yepic-ai-new.webflow.io', 'https://www.yepic.ai'],
+      }
+    });
+    console.log("Data successfully received: ");
+    return result;
   } catch (error) {
-      console.log("Error while executing script: ");
-      console.error(error);
+    console.log("Error while executing script: ");
+    console.error(error);
   }
 }
 
@@ -503,7 +503,7 @@ async function start_move_background_to_private_cloud_function(image_name) {
 var audioElement = document.createElement('audio');
 setListenButtonState("stopped");
 
-function setListenButtonState(state){
+function setListenButtonState(state) {
   if (state == "stopped") {
     console.log("stopped state");
     listenButtonStatus = "stopped";
@@ -531,42 +531,42 @@ function loadListenPreview() {
     audioElement.play();
 
   } else {
-  console.log("Sending call to generate and play listen preview");
-  var settings = {
-    url: "https://app-vktictsuea-nw.a.run.app/tts_request",
-    //url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
-    method: "POST",
-    crossDomain: true,
-    timeout: 0,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${MemberStack.getToken()}`,
-    },
-    data: JSON.stringify({
-      voice: fV.voice,
-      script: fV.script,
-      name: fV.name,
-      email: fV.email,
-      id: fV.id,
-      voice_api_provider: fV.voice_api_provider,
-      voice_provider:  fV.voice_provider
-    }),
-  };
-  console.log("Ajax call: ");
-  $.ajax(settings).done(function (response) { 
-    console.log("success");
-    console.log(response);
-    if (response.signed_url == null || response.signed_url == undefined) {
-      $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
-      setListenButtonState("stopped");
-      audioElement.currentTime = 0;
-      $("#cv-listen-error").css("display", "block");
-    } else {
-      audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
-      audioElement.setAttribute('src', response.signed_url);
-      setListenButtonState("playing");
-      audioElement.play();
-    }
+    console.log("Sending call to generate and play listen preview");
+    var settings = {
+      url: "https://app-vktictsuea-nw.a.run.app/tts_request",
+      //url: "https://europe-west2-speech2vid-api.cloudfunctions.net/tts-audio",
+      method: "POST",
+      crossDomain: true,
+      timeout: 0,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${MemberStack.getToken()}`,
+      },
+      data: JSON.stringify({
+        voice: fV.voice,
+        script: fV.script,
+        name: fV.name,
+        email: fV.email,
+        id: fV.id,
+        voice_api_provider: fV.voice_api_provider,
+        voice_provider: fV.voice_provider
+      }),
+    };
+    console.log("Ajax call: ");
+    $.ajax(settings).done(function (response) {
+      console.log("success");
+      console.log(response);
+      if (response.signed_url == null || response.signed_url == undefined) {
+        $("#cv-listen-error").text("Unexpected Error, please try again or contact support");
+        setListenButtonState("stopped");
+        audioElement.currentTime = 0;
+        $("#cv-listen-error").css("display", "block");
+      } else {
+        audioPreviewLocalStorage[compositeAudioKey] = response.signed_url;
+        audioElement.setAttribute('src', response.signed_url);
+        setListenButtonState("playing");
+        audioElement.play();
+      }
     }).fail(function (response) {
       console.log("fail");
       console.log(response);
@@ -578,15 +578,16 @@ function loadListenPreview() {
       $("#cv-listen-error").css("display", "block");
       setListenButtonState("stopped");
       audioElement.currentTime = 0;
-  });
-}}
+    });
+  }
+}
 
-audioElement.addEventListener('ended', function() {
+audioElement.addEventListener('ended', function () {
   setListenButtonState("stopped");
   audioElement.currentTime = 0;
 });
 
-$("#previewPlayBtn").unbind().click(function() {
+$("#previewPlayBtn").unbind().click(function () {
   console.log("click event on listen")
   fV.script = $("#video-script").val();
   if (fV === undefined || fV === null || fV.voice === undefined || fV.voice === null || fV.voice === '' || fV.script === undefined || fV.script === null || fV.script === '') {
