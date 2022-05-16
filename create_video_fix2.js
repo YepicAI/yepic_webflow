@@ -25,6 +25,7 @@ var VL = {};
 var backgroundClass = " ";
 var newClass;
 var selectedActorGender = 'actor-male';
+
 var video_request_model = {
   actor: 'Alex', // submit from create video page
   voice: '', // submit from create video page 
@@ -104,35 +105,20 @@ function selectActorPositionAndType(actorPosition, actorType, imageClassName) {
   video_request_model.avatar_type = actorType;
 };
 
-function changeCircleBackground(colorObject) {
+async function changeCircleBackground(colorObject) {
   hexCode = colorObject.attr("data-hexcode");
   video_request_model.avatar_circle_background = "#" + hexCode;
   console.log(video_request_model.avatar_circle_background);
 
-  if (colorObject.hasClass('c1')) {
-    backgroundColorClass = 'c1'
+  class_list = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8'];
+
+  for (let i = 0; i < class_list.length; i++) {
+    if (colorObject.hasClass(class_list[i])) {
+      backgroundColorClass = class_list[i];
+      //break;
+    }
   }
-  if (colorObject.hasClass('c2')) {
-    backgroundColorClass = 'c2'
-  }
-  if (colorObject.hasClass('c3')) {
-    backgroundColorClass = 'c3'
-  }
-  if (colorObject.hasClass('c4')) {
-    backgroundColorClass = 'c4'
-  }
-  if (colorObject.hasClass('c5')) {
-    backgroundColorClass = 'c5'
-  }
-  if (colorObject.hasClass('c6')) {
-    backgroundColorClass = 'c6'
-  }
-  if (colorObject.hasClass('c7')) {
-    backgroundColorClass = 'c7'
-  }
-  if (colorObject.hasClass('c8')) {
-    backgroundColorClass = 'c8'
-  }
+
   $(".form-tab-circle-bg").css({ borderColor: "transparent" });
   colorObject.css(borderCss);
   $("#previewCircImg").removeClass("c1 c2 c3 c4 c5 c6 c7 c8");
@@ -158,51 +144,46 @@ $("#tab-title-circle").click(function () {
   video_request_model.avatar_position = actorTypePositionSelection.circle;
 });
 
-//----------- FULL-BODY selection -----------
-$(".actor-pos-left").click(function () {
-  selectActorPositionAndType(".actor-pos-left", "full-body", "preview-img-left");
-});
-$(".actor-pos-mid").click(function () {
-  selectActorPositionAndType(".actor-pos-mid", "full-body", "preview-img-mid");
-});
-$(".actor-pos-right").click(function () {
-  selectActorPositionAndType(".actor-pos-right", "full-body", "preview-img-right");
-});
+// set avatar_position click events
+async function set_avatar_position_click_events() {
+  var items = {
+    ".actor-pos-left": ["full-body", "preview-img-left"],
+    ".actor-pos-mid": ["full-body", "preview-img-mid"],
+    ".actor-pos-right": ["full-body", "preview-img-right"],
+    ".actor-pos-circle-topleft": ["circle", "t1"],
+    ".actor-pos-circle-topcentre": ["circle", "t2"],
+    ".actor-pos-circle-topright": ["circle", "t3"],
+    ".actor-pos-circle-midleft": ["circle", "m1"],
+    ".actor-pos-circle-midcentre": ["circle", "m2"],
+    ".actor-pos-circle-midright": ["circle", "m3"],
+    ".actor-pos-circle-botleft": ["circle", "b1"],
+    ".actor-pos-circle-botcentre": ["circle", "b2"],
+    ".actor-pos-circle-botright": ["circle", "b3"],
+  };
 
-//----------- CIRCLE-BODY selection -----------
-$(".actor-pos-circle-topleft").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-topleft", "circle", "t1");
-});
-$(".actor-pos-circle-topcentre").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-topcentre", "circle", "t2");
-});
-$(".actor-pos-circle-topright").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-topright", "circle", "t3");
-});
-$(".actor-pos-circle-midleft").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-midleft", "circle", "m1");
-});
-$(".actor-pos-circle-midcentre").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-midcentre", "circle", "m2");
-});
-$(".actor-pos-circle-midright").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-midright", "circle", "m3");
-});
-$(".actor-pos-circle-botleft").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-botleft", "circle", "b1");
-});
-$(".actor-pos-circle-botcentre").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-botcentre", "circle", "b2");
-});
-$(".actor-pos-circle-botright").click(function () {
-  selectActorPositionAndType(".actor-pos-circle-botright", "circle", "b3");
-});
+  for (const [key, value] of Object.entries(items)) {
+    const i_key = key;
+    const i_value = value;
+
+    let element = document.querySelector(key);
+
+    element.addEventListener("click", async (e) => {
+      selectActorPositionAndType(i_key, i_value[0], i_value[1]);
+    });
+  }
+}
 
 //----------- CIRCLE BACKGROUND selection -----------
+async function set_circle_background_click_events() {
+  var element = document.querySelector("#circle-background-select");
 
-$(".form-circ-colours").on("click", "#circle-background-select", function () {
-  changeCircleBackground($(this));
-});
+  element.addEventListener("click", async (e) => {
+    await changeCircleBackground($(this));
+  });
+}
+
+(async () => set_avatar_position_click_events())();
+(async () => set_circle_background_click_events())();
 
 // ------------------------------------------------- SELECT VOICE AND ACTOR -------------------------------------------------
 
@@ -403,6 +384,7 @@ function startUpSelection() {
   cleanUpVoiceSelectionBasedOnActorGender('actor-male');
   InitializeIsUserVerified();
   notify_audio_error_reset();
+
 }
 setTimeout(startUpSelection, 1000);
 
