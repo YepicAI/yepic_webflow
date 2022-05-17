@@ -183,6 +183,7 @@ async function set_avatar_position_click_events() {
 //----------- CIRCLE BACKGROUND selection -----------
 async function set_circle_background_click_events() {
   var element_list = document.querySelectorAll("#circle-background-select");
+  await changeCircleBackground(element_list[0]);
 
   for (let i = 0; i < element_list.length; i++) {
     element_list[i].addEventListener("click", async (e) => {
@@ -300,7 +301,7 @@ $("#background-selection2").on("click", "#customBackground", function () {
 
 // ---------------------- INITIALIZE -------------------------
 function InitializeSelections() {
-  $("[data-actor='Alex']").css(borderCss);
+  $("[data-actor='"+video_request_model.actor+"']").css(borderCss);
   $("[data-background='office-background-FHD.png']").css(borderCss);
   $($($(".preview-bg")[0])[0]).css({
     backgroundImage: defaultBackground,
@@ -877,7 +878,7 @@ $(".size-range").on("change", ".size-range", function () {
 });
 
 async function uploadAudio() {
-  var fileName = uuid() + ff[0].name.split(".").pop();
+  var fileName = `custom_audio-${uuid()}.${ff[0].name.split(".").pop()}`;
   $.ajax({
     url:
       "https://storage.googleapis.com/upload/storage/v1/b/yepicai-backend.appspot.com/o?uploadType=media&name=" +
