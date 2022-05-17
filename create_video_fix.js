@@ -769,18 +769,18 @@ function send_request() {
   return false;
 }
 
-async function submit_video_request() {
+async function submit_video_request_data(data) {
   if (submitted) return;
 
   submitted = true;
   console.log(video_request_model);
 
-  var url = 'https://app-vktictsuea-nw.a.run.app/video_request';
+  var url = 'http://127.0.0.1:5000/video_request';
 
   try {
     let response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(video_request_model),
+      body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${MemberStack.getToken()}`,
@@ -803,6 +803,10 @@ async function submit_video_request() {
   submitted = false;
   document.querySelector(".w-form-fail").style.display = 'none';
 };
+
+async function submit_video_request() {
+  await submit_video_request_data(video_request_model);
+}
 
 // remove red background
 
