@@ -15,6 +15,7 @@ const redBorderCss = {
   borderStyle: "solid",
   borderWidth: "2px",
 };
+var backgroundColorClass = '';
 var submitted = false;
 var stateChanged = false;
 var previewDisabled = true;
@@ -75,6 +76,8 @@ MemberStack.onReady.then(function (member) {
   //video_request_model.name = member["name"];
   //video_request_model.memberstack_id = member["id"];
   //video_request_model.memberstack_membership_status = $memberstack.membership.status;
+
+  initializeTextCounterVariable();
 });
 var audioPreviewLocalStorage = {};
 
@@ -182,7 +185,7 @@ async function set_circle_background_click_events() {
   var element = document.querySelector("#circle-background-select");
 
   element.addEventListener("click", async (e) => {
-    await changeCircleBackground($(this));
+    await changeCircleBackground(e.currentTarget);
   });
 }
 
@@ -374,16 +377,22 @@ async function InitializeIsUserVerified() {
 
 function initializeTextCounterVariable() {
   textCounterVariable = 4000;
-  // if (video_request_model.membershipTypeId == "612767d60729f2000402c481" || video_request_model.membershipTypeId == "61a548c958f6f200043af22d" || video_request_model.membershipTypeId == "6137a90f266a3f0004c23349") {
-  //   console.log("Set to 1000");
-  //   textCounterVariable == 1000;
-  // } else {
-  //   console.log("Set to 1000");
-  //   textCounterVariable == 4000;
-  // }
+  
+  try {
+    if (memberstack_member.membership.id == "612767d60729f2000402c481" || memberstack_member.membership.id == "61a548c958f6f200043af22d" || memberstack_member.membership.id == "6137a90f266a3f0004c23349") {
+      textCounterVariable == 1000;
+    }
+  }
+  catch(error)
+  {
+    console.log(error);
+  }
+
+  //
   element = document.querySelector('#video-script');
   element.maxLength = textCounterVariable;
 
+  // 
   element = document.querySelector('.p-char-wrap input.p-char-num');
   element.value = textCounterVariable.toString();
 }
