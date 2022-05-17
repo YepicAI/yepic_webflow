@@ -32,32 +32,32 @@ var video_request_model = {
   memberstack_id: '', // taken from JWT token
 
   // submit from create video page (write once fields)
-  actor: 'Alex', 
-  voice: '',  
-  voice_api_provider: '', 
-  voice_provider: '', 
-  script: '', 
-  avatar_type: 'full-body', 
-  preview_image_url: 'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png', 
-  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png', 
-  avatar_size: '', 
-  avatar_position: 'centre', 
-  avatar_circle_background: '', 
-  avatar_circle_background_rim: '', 
-  avatar_size_circle: '', 
-  video_name: '', 
-  
+  actor: 'Alex',
+  voice: '',
+  voice_api_provider: '',
+  voice_provider: '',
+  script: '',
+  avatar_type: 'full-body',
+  preview_image_url: 'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png',
+  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png',
+  avatar_size: '',
+  avatar_position: 'centre',
+  avatar_circle_background: '',
+  avatar_circle_background_rim: '',
+  avatar_size_circle: '',
+  video_name: '',
+
   // backend generated fields for gallery only (read only)
-  date_created: '', 
-  date_modified: '', 
-  script_approval: '', 
-  create_video: '', 
-  watermarked: '', 
-  download_url: '', 
+  date_created: '',
+  date_modified: '',
+  script_approval: '',
+  create_video: '',
+  watermarked: '',
+  download_url: '',
   custom_audio_file: '', // if user submitted a custom audio upload
-  audio_file: '', 
-  current_video_most_recent: '', 
-  unique_webpage: '',   
+  audio_file: '',
+  current_video_most_recent: '',
+  unique_webpage: '',
 };
 
 var actorTypePositionSelection = {
@@ -184,9 +184,8 @@ async function set_avatar_position_click_events() {
 async function set_circle_background_click_events() {
   var element_list = document.querySelectorAll("#circle-background-select");
 
-  for (let i = 0; i < element_list.length; i++)
-  {
-    element.addEventListener("click", async (e) => {
+  for (let i = 0; i < element_list.length; i++) {
+    element_list[i].addEventListener("click", async (e) => {
       await changeCircleBackground(e.currentTarget);
     });
   }
@@ -380,14 +379,13 @@ async function InitializeIsUserVerified() {
 
 function initializeTextCounterVariable() {
   textCounterVariable = 4000;
-  
+
   try {
     if (memberstack_member.membership.id == "612767d60729f2000402c481" || memberstack_member.membership.id == "61a548c958f6f200043af22d" || memberstack_member.membership.id == "6137a90f266a3f0004c23349") {
       textCounterVariable == 1000;
     }
   }
-  catch(error)
-  {
+  catch (error) {
     console.log(error);
   }
 
@@ -481,7 +479,7 @@ function uuid() {
 
 async function uploadImage() {
   var fileName = `custom_image-${uuid()}.${imageFile.name.split(".").pop()}`;
-  
+
   $.ajax({
     url:
       "https://storage.googleapis.com/upload/storage/v1/b/yepicai-backend.appspot.com/o?uploadType=media&name=" +
