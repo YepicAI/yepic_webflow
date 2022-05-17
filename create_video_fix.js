@@ -587,7 +587,7 @@ async function loadListenPreview() {
   }
 
   // call audio preview api
-  var url = 'https://127.0.0.1:5000/tts_request';
+  var url = 'http://127.0.0.1:5000/tts_request';
   //var url = 'https://app-vktictsuea-nw.a.run.app/tts_request';
   var moderator_blocked = false;
 
@@ -723,7 +723,7 @@ function send_request() {
   }
 
   if (video_request_model.avatar_type == "circle") {
-    video_request_model.avatar_size = $("#size-circle").val();
+    video_request_model.avatar_size = ''; //$("#size-circle").val();
     video_request_model.avatar_size_circle = $("#size-circle").val();
     //video_request_model.avatar_circle_background = "";
     video_request_model.avatar_circle_background_rim = "#000000";
