@@ -27,33 +27,36 @@ var newClass;
 var selectedActorGender = 'actor-male';
 
 var video_request_model = {
-  actor: 'Alex', // submit from create video page
-  voice: '', // submit from create video page 
-  voice_api_provider: '', // submit from create video page
-  voice_provider: '', // submit from create video page
-  script: '', // submit from create video page
-  custom_audio_file: '', // if user submitted a custom audio upload
-  audio_file: '', // backend generated - for gallery
-  current_video_most_recent: '', // backend generated - for gallery
-  audio_fea_link: '', // backend only
-  avatar_type: 'full-body', // submit from create video page
-  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png', // submit from create video page
-  script_approval: '', // backend generated - for gallery
-  create_video: '', // backend generated - for gallery
-  watermarked: '', // backend generated - for gallery
-  avatar_size: '', // submit from create video page
-  avatar_position: 'centre', // submit from create video page
-  avatar_circle_background: '', // submit from create video page
-  avatar_circle_background_rim: '', // submit from create video page
-  avatar_size_circle: '', // submit from create video page
-  vm_status: '', // backend generated for debugging only
+  // note: not used for authentication or verification
   memberstack_id: '', // taken from JWT token
-  video_name: '', // submit from create video page
-  unique_webpage: '', // backend generated - for gallery
-  date_created: '', // backend generated - for gallery
-  date_modified: '', // not used by frontend
-  download_url: '', // backend generated - for gallery
-  preview_image_url: 'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png'
+
+  // submit from create video page (write once fields)
+  actor: 'Alex', 
+  voice: '',  
+  voice_api_provider: '', 
+  voice_provider: '', 
+  script: '', 
+  avatar_type: 'full-body', 
+  preview_image_url: 'https://assets-global.website-files.com/603a1632f3d4a6c0f66872b9/6082b99fff1618b81cc1b433_khamal-p-500.png', 
+  background_url: 'https://storage.googleapis.com/yepicai-backend.appspot.com/regularBackgrounds/office-background-FHD.png', 
+  avatar_size: '', 
+  avatar_position: 'centre', 
+  avatar_circle_background: '', 
+  avatar_circle_background_rim: '', 
+  avatar_size_circle: '', 
+  video_name: '', 
+  
+  // backend generated fields for gallery only (read only)
+  date_created: '', 
+  date_modified: '', 
+  script_approval: '', 
+  create_video: '', 
+  watermarked: '', 
+  download_url: '', 
+  custom_audio_file: '', // if user submitted a custom audio upload
+  audio_file: '', 
+  current_video_most_recent: '', 
+  unique_webpage: '',   
 };
 
 var actorTypePositionSelection = {
@@ -369,22 +372,28 @@ async function InitializeIsUserVerified() {
 }
 
 function initializeTextCounterVariable() {
-  if (video_request_model.membershipTypeId == "612767d60729f2000402c481" || video_request_model.membershipTypeId == "61a548c958f6f200043af22d" || video_request_model.membershipTypeId == "6137a90f266a3f0004c23349") {
-    console.log("Set to 1000");
-    textCounterVariable == 1000;
-  } else {
-    console.log("Set to 1000");
-    textCounterVariable == 4000;
-  }
+  textCounterVariable = 4000;
+  // if (video_request_model.membershipTypeId == "612767d60729f2000402c481" || video_request_model.membershipTypeId == "61a548c958f6f200043af22d" || video_request_model.membershipTypeId == "6137a90f266a3f0004c23349") {
+  //   console.log("Set to 1000");
+  //   textCounterVariable == 1000;
+  // } else {
+  //   console.log("Set to 1000");
+  //   textCounterVariable == 4000;
+  // }
+  element = document.querySelector('#video-script');
+  element.maxLength = textCounterVariable;
+
+  element = document.querySelector('.p-char-wrap input.p-char-num');
+  element.value = textCounterVariable.toString();
 }
 
 function startUpSelection() {
+  initializeTextCounterVariable();
   InitializeActorPositionAndTypeSelection();
   InitializeSelections();
   cleanUpVoiceSelectionBasedOnActorGender('actor-male');
   InitializeIsUserVerified();
   notify_audio_error_reset();
-
 }
 setTimeout(startUpSelection, 1000);
 
@@ -449,8 +458,7 @@ function uuid() {
     console.log(error);
   }
   return (
-    "file-" +
-    "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx.".replace(/[xy]/g, function (c) {
+    "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
       var r = (Math.random() * 16) | 0,
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
@@ -459,7 +467,8 @@ function uuid() {
 }
 
 async function uploadImage() {
-  var fileName = uuid() + imageFile.name.split(".").pop();
+  var fileName = `custom_image-${uuid()}.${imageFile.name.split(".").pop()}`;
+  
   $.ajax({
     url:
       "https://storage.googleapis.com/upload/storage/v1/b/yepicai-backend.appspot.com/o?uploadType=media&name=" +
