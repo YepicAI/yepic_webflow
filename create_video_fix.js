@@ -112,22 +112,22 @@ function selectActorPositionAndType(actorPosition, actorType, imageClassName) {
   video_request_model.avatar_type = actorType;
 };
 
-async function changeCircleBackground(colorObject) {
-  hexCode = colorObject.attr("data-hexcode");
+async function changeCircleBackground(element) {
+  hexCode = element.getAttribute("data-hexcode");
   video_request_model.avatar_circle_background = "#" + hexCode;
   console.log(video_request_model.avatar_circle_background);
 
   class_list = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8'];
 
   for (let i = 0; i < class_list.length; i++) {
-    if (colorObject.hasClass(class_list[i])) {
+    if (element.classList.contains(class_list[i])) {
       backgroundColorClass = class_list[i];
       //break;
     }
   }
 
   $(".form-tab-circle-bg").css({ borderColor: "transparent" });
-  colorObject.css(borderCss);
+  element.style = borderCss;
   $("#previewCircImg").removeClass("c1 c2 c3 c4 c5 c6 c7 c8");
   $("#previewCircImg").addClass(backgroundColorClass);
 };
