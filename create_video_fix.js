@@ -69,6 +69,7 @@ var actorTypePositionSelection = {
 };
 var memberstack_member = null;
 MemberStack.onReady.then(function (member) {
+  console.log(member);
   memberstack_member = member;
   //video_request_model.email = member["email"];
   //video_request_model.name = member["name"];

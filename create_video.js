@@ -49,6 +49,7 @@ var actorTypePositionSelection = {
   classNameCircleImage: "m2",
 };
 MemberStack.onReady.then(function (member) {
+  console.log(member);
   fV.email = member["email"];
   fV.name = member["name"];
   fV.id = member["id"];
