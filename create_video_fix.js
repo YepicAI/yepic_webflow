@@ -182,11 +182,14 @@ async function set_avatar_position_click_events() {
 
 //----------- CIRCLE BACKGROUND selection -----------
 async function set_circle_background_click_events() {
-  var element = document.querySelector("#circle-background-select");
+  var element_list = document.querySelectorAll("#circle-background-select");
 
-  element.addEventListener("click", async (e) => {
-    await changeCircleBackground(e.currentTarget);
-  });
+  for (let i = 0; i < element_list.length; i++)
+  {
+    element.addEventListener("click", async (e) => {
+      await changeCircleBackground(e.currentTarget);
+    });
+  }
 }
 
 (async () => set_avatar_position_click_events())();
