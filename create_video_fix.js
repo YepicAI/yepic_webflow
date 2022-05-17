@@ -725,7 +725,7 @@ function send_request() {
   if (video_request_model.avatar_type == "circle") {
     video_request_model.avatar_size = $("#size-circle").val();
     video_request_model.avatar_size_circle = $("#size-circle").val();
-    video_request_model.avatar_circle_background = "";
+    //video_request_model.avatar_circle_background = "";
     video_request_model.avatar_circle_background_rim = "#000000";
   }
 
