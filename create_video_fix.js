@@ -587,8 +587,8 @@ async function loadListenPreview() {
   }
 
   // call audio preview api
-  var url = 'http://127.0.0.1:5000/tts_request';
-  //var url = 'https://app-vktictsuea-nw.a.run.app/tts_request';
+  //var url = 'http://127.0.0.1:5000/tts_request';
+  var url = 'https://app-vktictsuea-nw.a.run.app/tts_request';
   var moderator_blocked = false;
 
   try {
@@ -776,8 +776,8 @@ async function submit_video_request_data(data) {
   submitted = true;
   console.log(video_request_model);
 
-  var url = 'http://127.0.0.1:5000/video_request';
-  //var url = 'https://app-vktictsuea-nw.a.run.app/video_request';
+  //var url = 'http://127.0.0.1:5000/video_request';
+  var url = 'https://app-vktictsuea-nw.a.run.app/video_request';
 
   try {
     let response = await fetch(url, {
