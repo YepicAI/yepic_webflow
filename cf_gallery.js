@@ -77,7 +77,7 @@ async function get_video_gallery() {
     
     let response = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify({ 'id': user.id }),
+        //body: JSON.stringify({ 'id': user.id }),
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + MemberStack.getToken(),
