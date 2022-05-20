@@ -7,6 +7,7 @@ MemberStack.onReady.then(function (member) {
 });
 
 function title_case(str) {
+    if (str === undefined || str === null || str === '') return '';
     return str.replace(
         /\w\S*/g,
         function (txt) {
@@ -73,11 +74,11 @@ function insert_video_html(index, row) {
 
 async function get_video_gallery() {
     //var url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
-    var url = 'https://app-vktictsuea-nw.a.run.app/video_gallery';
+    var url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
     
     let response = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify({ 'id': user.id }),
+        //body: JSON.stringify({ 'id': user.id }),
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + MemberStack.getToken(),
