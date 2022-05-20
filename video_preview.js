@@ -46,9 +46,9 @@ function insert_video_html(index, row) {
     </div>
     `;
 
-    var html_template_string = $.parseHTML(html_template);
+    //var html_template_string = $.parseHTML(html_template);
     element = document.querySelector('.container.a-center');
-    element.innerHTML = html_template_string;
+    element.innerHTML = html_template;
 }
 
 async function get_video_gallery() {
