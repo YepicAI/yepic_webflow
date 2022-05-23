@@ -7,6 +7,8 @@ MemberStack.onReady.then(function (member) {
 });
 
 function title_case(str) {
+    if (str === undefined || str === null || str === '') return '';
+    
     return str.replace(
         /\w\S*/g,
         function (txt) {
