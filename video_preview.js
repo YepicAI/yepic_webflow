@@ -3,7 +3,7 @@ MemberStack.onReady.then(function (member) {
     user.email = member["email"];
     user.name = member["name"];
     user.id = member["id"];
-    user.membershipTypeId = $memberstack.membership.status;
+    //user.membershipTypeId = $memberstack.membership.status;
 });
 
 function title_case(str) {
