@@ -27,26 +27,6 @@ function insert_video_html(index, row) {
 	        <source src="${row.current_video_most_recent}" type="video/mp4">
         </video>
     </div>
-
-    <div>
-        <p id="script" class="p-template">${row.script}</p>
-        </div>
-
-    <div>
-        <a href="${row.download_url}" class="button button-gallery-share w-inline-block">
-            <div class="w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="19.079" height="19.079">
-                <path d="m9.54 13.779 5.3-6.36h-3.18V0H7.42v7.419H4.24Zm-7.419 3.18v-8.48H.001v8.479a2.126 2.126 0 0 0 2.12 2.12h14.838a2.126 2.126 0 0 0 2.12-2.119v-8.48h-2.12v8.479Z" fill="currentColor"></path>
-            </svg></div>
-        </a>
-    </div>
-
-    <div class="margin-bottom margin-s">
-        <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/><br/></div>
-        <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/><br/></div>
-        <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/><br/></div>
-        <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
-        <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
-    </div>
     `;
 
     //var html_template_string = $.parseHTML(html_template);
