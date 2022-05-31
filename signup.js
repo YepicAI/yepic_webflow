@@ -1,25 +1,25 @@
-var emailIsNew = false
+var emailIsNew = true;
 var formSubmitted = false;
-var status = false;
+//var status = false;
 var quality_score = false;
 var deliverability = false;
 var is_valid_format = false;
 var is_free_email = false;
 var is_disposable_email = false;
-var email_validation = false;
+//var email_validation = false;
 
-function checkNewEmail(email) {
+// function checkNewEmail(email) {
 
-    $.ajax({
-        async: false,
-        type: 'GET',
-        url: "https://airtable-db-dot-speech2vid-api.nw.r.appspot.com/checkEmail/" + email,
-        success: function (data) {
-            emailIsNew = data;
-        }
-    });
-    console.log("Email is" + emailIsNew);
-}
+//     $.ajax({
+//         async: false,
+//         type: 'GET',
+//         url: "https://airtable-db-dot-speech2vid-api.nw.r.appspot.com/checkEmail/" + email,
+//         success: function (data) {
+//             emailIsNew = data;
+//         }
+//     });
+//     console.log("Email is" + emailIsNew);
+// }
 
 function emailModerator(email) {
     $.ajax({
@@ -36,13 +36,13 @@ function emailModerator(email) {
         },
         success: function (data) {
 
-            status = data.status;
+            //status = data.status;
             quality_score = data.quality_score;
             deliverability = data.deliverability;
             is_valid_format = data.is_valid_format;
             is_free_email = data.is_free_email;
             is_disposable_email = data.is_disposable_email;
-            email_validation = data.email_validation;
+            //email_validation = data.email_validation;
         },
         error: function () {
             alert("Something went wrong, try again!");
@@ -115,7 +115,7 @@ $('a[data-name="form-submit"]').on('click', function () {
     formValues.how = $('.form-step-2 form #referral-how').val();
 
     res_data = emailModerator(formValues.email)
-    checkNewEmail(formValues.email)
+    //checkNewEmail(formValues.email)
 
     if (formValues.name.length < 3) {
         formErrors = true;
