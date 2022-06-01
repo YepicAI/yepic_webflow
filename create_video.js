@@ -81,6 +81,10 @@ MemberStack.onReady.then(function (member) {
 });
 var audioPreviewLocalStorage = {};
 
+function is_empty(value) {
+  return (value === undefined || value === null || value === '' || String(value).trim().length === 0);
+}
+
 // Page load first steps
 $(".preview-circle-img-wrap").hide();
 console.log("------------------------version: 01 ----------------------------");
@@ -563,10 +567,6 @@ async function notify_audio_error(error_message) {
 
 async function notify_audio_error_reset() {
   $("#cv-listen-error").css("display", "none");
-}
-
-function is_empty(value) {
-  return (value === undefined || value === null || value === '' || String(value).trim().length === 0);
 }
 
 async function loadListenPreview() {
