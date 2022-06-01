@@ -13,6 +13,7 @@ var selectors = {
     own_account: "#own-account",
 };
 
+var submit_enabled = true;
 var pre_error_style = {};
 
 async function cache_styles() {
@@ -63,6 +64,9 @@ async function set_submit_click_events() {
         e.stopPropagation();
         e.preventDefault();
 
+        if (!submit_enabled) { return; }
+        submit_enabled = false;
+
         let background_element = document.querySelector(selectors.background_element);
         let background_image = getComputedStyle(background_element).getPropertyValue('background-image');
         let background_url = background_image.slice(4, -1).replace(/['"]/g, "");
@@ -107,6 +111,7 @@ async function set_submit_click_events() {
         }
 
         if (!form_valid) {
+            submit_enabled = true;
             return;
         }
 
@@ -125,21 +130,29 @@ async function set_submit_click_events() {
 
         console.log(form_vars);
 
-        let url = 'https://app-vktictsuea-nw.a.run.app/royal_invite/';
+        try {
+            let url = 'https://app-vktictsuea-nw.a.run.app/royal_invite/';
 
-        let response = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(form_vars),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+            let response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(form_vars),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-        var result = await response.json();
+            var result = await response.json();
+        }
+        catch (err) {
+            console.log(err);
+        }
+        submit_enabled = true;
     });
 }
 
-await cache_styles();
-await set_template_click_events();
-await set_submit_click_events();
-await set_reset_error_click_events();
+window.addEventListener("load", async (e) => {
+    await cache_styles();
+    await set_template_click_events();
+    await set_submit_click_events();
+    await set_reset_error_click_events();
+});
