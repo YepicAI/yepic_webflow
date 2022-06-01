@@ -137,7 +137,7 @@ async function set_submit_click_events() {
         console.log(form_vars);
 
         try {
-            let url = 'https://app-vktictsuea-nw.a.run.app/royal_invite/';
+            let url = 'https://app-vktictsuea-nw.a.run.app/royal_invite';
 
             let response = await fetch(url, {
                 method: 'POST',
