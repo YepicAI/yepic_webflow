@@ -17,13 +17,14 @@ async function set_selectors() {
         'your_name'               : "#Your-Name",
         'event_name'              : "#Event-Name",
         'event_location'          : "#Event-Location",
-        'event_date'              : "#w-node-cb587f20-cdbd-f04a-f92e-cd3ed701fc7c-aafcc743 > div:nth-child(1) > fieldset > input",
-        'event_time'              : "#w-node-cb587f20-cdbd-f04a-f92e-cd3ed701fc7c-aafcc743 > div:nth-child(2) > fieldset > input",
+        'event_date'              : "#wf-form-Royal-AIness > div:nth-child(2) > div.grid-ai-input > div:nth-child(5) > fieldset > input",
+        'event_time'              : "#wf-form-Royal-AIness > div:nth-child(2) > div.grid-ai-input > div:nth-child(6) > fieldset > input",
         'your_email'              : "#Your-Email",
         'email_agree'             : "#email-agree",
         'own_account'             : "#own-account",
     };
 }
+
 
 async function cache_styles() {
     for (const [selector_key, selector] of Object.entries(selectors)) {
