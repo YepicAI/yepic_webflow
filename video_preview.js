@@ -38,9 +38,7 @@ async function get_video_gallery() {
     var urlParams = new URLSearchParams(window.location.search);
     var recordID = urlParams.get('record_id');
 
-    //var url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
-    //var url = `https://app-vktictsuea-nw.a.run.app/video_preview/${recordID}`;
-    var url = `https://app-vktictsuea-nw.a.run.app/video_gallery/${recordID}`;
+    var url = `https://app-vktictsuea-nw.a.run.app/video_preview/${recordID}`;
     
     let response = await fetch(url, {
         method: 'POST',
