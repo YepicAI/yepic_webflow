@@ -1,4 +1,5 @@
 var selectors = {
+    submit: "#wf-form-Royal-AIness > input",
     background_templates: "div.ai-jubilee-grid label.ai-radio-parent.w-radio",
     background_template_grid: "#wf-form-Royal-AIness > div:nth-child(1) > div.ai-jubilee-grid",
     background_element: "#home > div.container.container-ainess > div.ai-form-container > div.flex-form-ai > div._w-50._w-100-tab > div > div > div > div.preview-bg",
@@ -58,7 +59,7 @@ async function set_reset_error_click_events() {
 }
 
 async function set_submit_click_events() {
-    let src = document.querySelector("#wf-form-Royal-AIness > input");
+    let src = document.querySelector(selectors.submit);
 
     src.addEventListener("click", async (e) => {
         e.stopPropagation();
