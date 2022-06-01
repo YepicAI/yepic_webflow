@@ -565,6 +565,10 @@ async function notify_audio_error_reset() {
   $("#cv-listen-error").css("display", "none");
 }
 
+function is_empty(value) {
+  return (value === undefined || value === null || value === '' || String(value).trim().length === 0);
+}
+
 async function loadListenPreview() {
   // hide error message
   await notify_audio_error_reset();
@@ -573,9 +577,23 @@ async function loadListenPreview() {
   // template error messages
   var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
   var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Please continue to submit your video request to be reviewed by customer services.";
+  var error_voice      = "Please select a voice";
+  var error_script     = "Please provide a script";
+
+  // check parameters
+  if (is_empty(video_request_model.voice_api_provider) || is_empty(video_request_model.voice_provider) || is_empty(video_request_model.voice))
+  {
+
+  }
+
+  if (is_empty(video_request_model.script))
+  {
+
+  }
 
   // composite key
-  compositeAudioKey = [video_request_model.voice_api_provider, video_request_model.voice_provider, video_request_model.voice, video_request_model.script].join(';');
+  let p = [video_request_model.voice_api_provider, video_request_model.voice_provider, video_request_model.voice, video_request_model.script];
+  compositeAudioKey = p.join(';');
 
   // check for local cache
   if (audioPreviewLocalStorage[compositeAudioKey] !== undefined) {
@@ -639,14 +657,12 @@ window.addEventListener("load", async (e) => {
     video_request_model.script = $("#video-script").val();
 
     // check parameters exist
-    if (video_request_model.voice === undefined || video_request_model.voice === null || video_request_model.voice.trim() === '' ||
-      video_request_model.voice_provider === undefined || video_request_model.voice_provider === null || video_request_model.voice_provider.trim() === '' ||
-      video_request_model.voice_api_provider === undefined || video_request_model.voice_api_provider === null || video_request_model.voice_api_provider.trim() === '') {
+    if (is_empty(video_request_model.voice) || is_empty(video_request_model.voice_provider) || is_empty(video_request_model.voice_api_provider)) {
       await notify_audio_error("Please select an AI voice first.");
       return;
     }
 
-    if (video_request_model.script === undefined || video_request_model.script === null || video_request_model.script.trim() === '') {
+    if (is_empty(video_request_model.script)) {
       await notify_audio_error("Please write a script first.");
       return;
     }
@@ -712,8 +728,8 @@ $("#customAudio").on("click", function () {
 
 function send_request() {
   var formErrors = false;
-  video_request_model.script = $("#video-script").val();
-  video_request_model.video_name = $("#video-name").val();
+  video_request_model.script = document.querySelector("#video-script").value.trim();
+  video_request_model.video_name = document.querySelector("#video-name").value.trim();
 
   if (video_request_model.avatar_type == "full-body") {
     video_request_model.avatar_circle_background = "";
@@ -729,42 +745,38 @@ function send_request() {
     video_request_model.avatar_circle_background_rim = "#000000";
   }
 
-  if (video_request_model.video_name.length < 1) {
+  if (is_empty(video_request_model.video_name)) {
     formErrors = true;
     $(".form-name-wrap").css(redBorderCss);
   }
 
-  if (video_request_model.script.length < 3 && video_request_model.voice != "custom" && video_request_model.custom_audio_file != "") {
+  if (is_empty(video_request_model.script) && is_empty(video_request_model.custom_audio_file)) {
     formErrors = true;
     $("#video-script").css(redBorderCss);
   }
 
-  if (!video_request_model.actor) {
+  if (is_empty(video_request_model.actor)) {
     formErrors = true;
     $(".form-actor-select-wrap").css(redBorderCss);
   }
 
-  if (!video_request_model.background_url) {
+  if (is_empty(video_request_model.background_url)) {
     formErrors = true;
     $(".form-tab-bg-wrap").css(redBorderCss);
   }
 
-  if (video_request_model.voice == "") {
+  if (is_empty(video_request_model.voice)) {
     console.log("no voice selected")
     formErrors = true;
     $(".form-tab-voice-wrap").css(redBorderCss);
   }
 
-  if (video_request_model.avatar_position == 0) {
+  if (is_empty(video_request_model.avatar_position)) {
     $(".form-flex-horiz").css(redBorderCss);
   }
 
   if (!formErrors && !submitted) {
-    //if (video_request_model.background_image == "custom" && video_request_model.background_url == 0) {
-    //setTimeout(send_r, 2000);
-    //} else {
     (async () => submit_video_request())();
-    //}
   }
 
   return false;
