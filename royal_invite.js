@@ -1,24 +1,28 @@
-var selectors = {
-    'submit'                  : "#wf-form-Royal-AIness > input",
-    'background_templates'    : "div.ai-jubilee-grid label.ai-radio-parent.w-radio",
-    'background_template_grid': "#wf-form-Royal-AIness > div:nth-child(1) > div.ai-jubilee-grid",
-    'background_element'      : "#home > div.container.container-ainess > div.ai-form-container > div.flex-form-ai > div._w-50._w-100-tab > div > div > div > div.preview-bg",
-    'friend_name'             : "#Friend-s-Name",
-    'your_name'               : "#Your-Name",
-    'event_name'              : "#Event-Name",
-    'event_location'          : "#Event-Location",
-    'event_date'              : "#w-node-cb587f20-cdbd-f04a-f92e-cd3ed701fc7c-aafcc743 > div:nth-child(1) > fieldset > input",
-    'event_time'              : "#w-node-cb587f20-cdbd-f04a-f92e-cd3ed701fc7c-aafcc743 > div:nth-child(2) > fieldset > input",
-    'your_email'              : "#Your-Email",
-    'email_agree'             : "#email-agree",
-    'own_account'             : "#own-account",
-};
 
+var selectors = {};
 var submit_enabled = true;
 var pre_error_style = {};
 
 function is_empty(value) {
     return (value === undefined || value === null || value === '' || String(value).trim().length === 0);
+}
+
+async function set_selectors() {
+    selectors = {
+        'submit'                  : "#wf-form-Royal-AIness > input",
+        'background_templates'    : "div.ai-jubilee-grid label.ai-radio-parent.w-radio",
+        'background_template_grid': "#wf-form-Royal-AIness > div:nth-child(1) > div.ai-jubilee-grid",
+        'background_element'      : "#home > div.container.container-ainess > div.ai-form-container > div.flex-form-ai > div._w-50._w-100-tab > div > div > div > div.preview-bg",
+        'friend_name'             : "#Friend-s-Name",
+        'your_name'               : "#Your-Name",
+        'event_name'              : "#Event-Name",
+        'event_location'          : "#Event-Location",
+        'event_date'              : "#w-node-cb587f20-cdbd-f04a-f92e-cd3ed701fc7c-aafcc743 > div:nth-child(1) > fieldset > input",
+        'event_time'              : "#w-node-cb587f20-cdbd-f04a-f92e-cd3ed701fc7c-aafcc743 > div:nth-child(2) > fieldset > input",
+        'your_email'              : "#Your-Email",
+        'email_agree'             : "#email-agree",
+        'own_account'             : "#own-account",
+    };
 }
 
 async function cache_styles() {
@@ -153,6 +157,7 @@ async function set_submit_click_events() {
 }
 
 window.addEventListener("load", async (e) => {
+    await set_selectors();
     await cache_styles();
     await set_template_click_events();
     await set_submit_click_events();
