@@ -149,10 +149,23 @@ async function set_submit_click_events() {
             });
 
             var result = await response.json();
+
+            if (response.status === 200) {
+                let ele1 = document.querySelector(".w-form-done");
+                if (ele1!=null) ele1.style.display = 'block';
+                
+                let ele2 = document.querySelector(".form-wrap-inner");
+                if (ele2!=null) ele2.style.display = 'none';
+            }        
+            else
+            {
+                alert("Form error: " + result.response_status_message);
+            }
         }
         catch (err) {
             console.log(err);
         }
+
         submit_enabled = true;
     });
 }
