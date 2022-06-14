@@ -657,7 +657,7 @@ window.addEventListener("load", async (e) => {
     video_request_model.script = $("#video-script").val();
 
     // check parameters exist
-    if (is_empty(video_request_model.voice) || is_empty(video_request_model.voice_provider) || is_empty(video_request_model.voice_api_provider)) {
+    if (is_empty(video_request_model.custom_audio_file) && (is_empty(video_request_model.voice) || is_empty(video_request_model.voice_provider) || is_empty(video_request_model.voice_api_provider))) {
       await notify_audio_error("Please select an AI voice first.");
       return;
     }
