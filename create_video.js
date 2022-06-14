@@ -765,7 +765,7 @@ function send_request() {
     $(".form-tab-bg-wrap").css(redBorderCss);
   }
 
-  if (is_empty(video_request_model.voice)) {
+  if (is_empty(video_request_model.voice) && is_empty(video_request_model.custom_audio_file)) {
     console.log("no voice selected")
     formErrors = true;
     $(".form-tab-voice-wrap").css(redBorderCss);
