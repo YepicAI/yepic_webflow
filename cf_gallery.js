@@ -70,17 +70,15 @@ function insert_video_html(index, row) {
                     </div>
                     </div>
     `;
-    var html_template_string = $.parseHTML(html_template)
+    let html_template_string = $.parseHTML(html_template)
     $("#myvideolist").append(html_template_string);
 }
 
 async function get_video_gallery() {
-    //var url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
-    var url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
+    let url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
     
     let response = await fetch(url, {
         method: 'POST',
-        //body: JSON.stringify({ 'id': user.id }),
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + MemberStack.getToken(),
@@ -88,10 +86,6 @@ async function get_video_gallery() {
     });
 
     var result = await response.json();
-
-    //console.log(result);
-    //console.log(result.status);
-    //console.log(result.video_gallery);
 
     if (result.status !== 'success' && result.response_status !== 'success') return;
 
@@ -106,9 +100,8 @@ async function delete_video(video_request_uuid) {
     let token = MemberStack.getToken();
     if (token === undefined || token === null || token === '') return;
 
-    //let url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
-    //let url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
-    let url = `http://127.0.0.1:5000/delete_video_request/${video_request_uuid}`
+    let url = `https://app-vktictsuea-nw.a.run.app/delete_video_request/${video_request_uuid}`;
+    //let url = `http://127.0.0.1:5000/delete_video_request/${video_request_uuid}`;
     
     let response = await fetch(url, {
         method: 'POST',
@@ -122,7 +115,7 @@ async function delete_video(video_request_uuid) {
 
     if (result.status !== 'success' && result.response_status !== 'success') return;
 
-    location.reload();
+    window.location.reload();
 }
 
 async function insert_video_html_batch() {
