@@ -108,7 +108,7 @@ async function delete_video(video_request_uuid) {
 
     //let url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
     //let url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
-    let url = `https://127.0.0.1:5000/delete_video_request/${video_request_uuid}`
+    let url = `http://127.0.0.1:5000/delete_video_request/${video_request_uuid}`
     
     let response = await fetch(url, {
         method: 'POST',
