@@ -17,7 +17,8 @@ function title_case(str) {
 }
 
 function insert_video_html(index, row) {
-    var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
+    var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != "";
+    const del_msg = `Delete video #${index}?\\nTitle: ${row.video_name}\\n`;
     const html_template = `
                     <div class="video-item">
                     <div class="gallery-video-left">
@@ -62,6 +63,7 @@ function insert_video_html(index, row) {
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/><br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
                                     <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
+                                    <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}');" href="#">Delete Video</a></div>
                                 </div>
                             </div>
                         </div>
@@ -96,6 +98,31 @@ async function get_video_gallery() {
     video_gallery_result = result;
 
     await insert_video_html_batch();
+}
+
+
+async function delete_video(video_request_uuid) {
+    if (video_request_uuid === undefined || video_request_uuid === null || video_request_uuid === '') return;
+    let token = MemberStack.getToken();
+    if (token === undefined || token === null || token === '') return;
+
+    //let url = 'https://europe-west2-speech2vid-api.cloudfunctions.net/react-gallery';
+    //let url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
+    let url = `https://127.0.0.1:5000/delete_video_request/${video_request_uuid}`
+    
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    var result = await response.json();
+
+    if (result.status !== 'success' && result.response_status !== 'success') return;
+
+    location.reload();
 }
 
 async function insert_video_html_batch() {
