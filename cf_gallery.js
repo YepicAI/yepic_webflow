@@ -63,7 +63,7 @@ function insert_video_html(index, row) {
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/><br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
                                     <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
-                                    <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}');" href="#">Delete Video</a></div>
+                                    <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}'); return false;" href="#">Delete Video</a></div>
                                 </div>
                             </div>
                         </div>
