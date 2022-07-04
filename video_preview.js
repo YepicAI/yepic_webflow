@@ -8,7 +8,7 @@ MemberStack.onReady.then(function (member) {
 
 function title_case(str) {
     if (str === undefined || str === null || str === '') return '';
-    
+
     return str.replace(
         /\w\S*/g,
         function (txt) {
@@ -17,12 +17,21 @@ function title_case(str) {
     );
 }
 
+function insert_error() {
+    const html_template = `
+    <h1 id="video-title"></h1>
+    <p id="p_error">Video not found.</p>
+    `;
+
+    element = document.querySelector('.container.a-center');
+    element.innerHTML = html_template;
+}
+
 function insert_video_html(index, row) {
     if (row === undefined || row === null) return;
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
     const html_template = `
     <h1 id="video-title">${row.video_name}</h1>
-    <p id="p_error"></p>
     <div class="w-embed">
         <video id="video" width="100%" controls="">
 	        <source src="${row.current_video_most_recent}" type="video/mp4">
@@ -40,7 +49,7 @@ async function get_video_gallery() {
     var recordID = urlParams.get('record_id');
 
     var url = `https://app-vktictsuea-nw.a.run.app/video_preview/${recordID}`;
-    
+
     let response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -59,13 +68,10 @@ async function get_video_gallery() {
 
     video_gallery_result = result;
 
-    if (video_gallery_result.video_gallery === undefined || video_gallery_result.video_gallery === null || video_gallery_result.video_gallery.length === 0)
-    {
-        $("#video").hide();
-        $("#p_error").text('Video not found.');
+    if (video_gallery_result.video_gallery === undefined || video_gallery_result.video_gallery === null || video_gallery_result.video_gallery.length === 0) {
+        await insert_error();
     }
-    else
-    {
+    else {
         await insert_video_html_batch();
     }
 }
@@ -96,7 +102,7 @@ window.addEventListener("load", async (e) => {
 
     // button_load.addEventListener("click", async (e) => {
     //     if (disable_load_click) return;
-        
+
     //     disable_load_click = true;
     //     await insert_video_html_batch();
     //     disable_load_click = false;
