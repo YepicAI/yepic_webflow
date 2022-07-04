@@ -22,6 +22,7 @@ function insert_video_html(index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != ""
     const html_template = `
     <h1 id="video-title">${row.video_name}</h1>
+    <p id="p_error"></p>
     <div class="w-embed">
         <video id="video" width="100%" controls="">
 	        <source src="${row.current_video_most_recent}" type="video/mp4">
@@ -58,7 +59,15 @@ async function get_video_gallery() {
 
     video_gallery_result = result;
 
-    await insert_video_html_batch();
+    if (video_gallery_result.video_gallery === undefined || video_gallery_result.video_gallery === null || video_gallery_result.video_gallery.length === 0)
+    {
+        $("#video").hide();
+        $("#p_error").text('Video not found.');
+    }
+    else
+    {
+        await insert_video_html_batch();
+    }
 }
 
 async function insert_video_html_batch() {
