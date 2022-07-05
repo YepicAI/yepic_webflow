@@ -215,7 +215,7 @@ function insert_video_html(index, row) {
                             <div>
                                 <h2 class="t-16-bold-cap">Script</h2>
                                 <p id="script" class="p-template">${row.script}</p>
-                                <a download target="_blank" onclick="download_speech(this, '${row.voice_api_provider}','${row.voice_provider}','${row.voice}','${row.script}'); return false;" href="#">Download Audio</a>
+                                <a download target="_blank" onclick="download_speech(this, '${row.voice_api_provider}','${row.voice_provider}','${row.voice}','${row.script}'); return false;" href="#">Download Audio (Beta)</a>
                             </div>
                             <div class="tab-buttons">
                                 <a href="${row.unique_webpage}" class="button w-inline-block">
