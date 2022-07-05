@@ -62,6 +62,33 @@ async function rename_video(video_request_uuid, video_name) {
     window.location.reload();
 }
 
+async function set_video_access(video_request_uuid, video_access) {
+    if (video_request_uuid === undefined || video_request_uuid === null || video_request_uuid === '') return;
+    if (video_access === undefined || video_access === null || video_access === '') return;
+    if (video_access !== 'Public' && video_access !== 'Private') return;
+    let token = MemberStack.getToken();
+    if (token === undefined || token === null || token === '') return;
+
+    let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
+    
+    let response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            "video_access": video_access
+        })
+    });
+
+    var result = await response.json();
+
+    if (result.status !== 'success' && result.response_status !== 'success') return;
+
+    window.location.reload();
+}
+
 async function delete_video(video_request_uuid) {
     if (video_request_uuid === undefined || video_request_uuid === null || video_request_uuid === '') return;
     let token = MemberStack.getToken();
@@ -146,6 +173,8 @@ function insert_video_html(index, row) {
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/><br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
                                     <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
+                                    <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/><br/></div>
+                                    <div><a onclick="set_video_access('${row.video_request_uuid}', ${row.video_access === 'Public' ? 'Public' : 'Private'}); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/><br/></div>
                                     <div><a onclick="var prompt_result=prompt('Rename video (#${index})?','${row.video_name}'); rename_video('${row.video_request_uuid}', prompt_result); return false;" href="#">Rename video</a><br/><br/></div>
                                     <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}'); return false;" href="#">Delete Video</a></div>
                                 </div>
