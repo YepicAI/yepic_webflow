@@ -28,16 +28,17 @@ async function download_url(url, filename) {
         .catch(console.error);
 }
 
-async function download_speech(voice_api_provider, voice_provider, voice, script) {
-
+async function download_speech(ele, voice_api_provider, voice_provider, voice, script) {
+    if (ele === undefined) return;
     if (voice_api_provider === undefined || voice_api_provider === null || voice_api_provider.trim() === '') voice_api_provider = "aflorithmic";
     if (voice_provider === undefined || voice_provider === null || voice_provider.trim() === '') voice_provider = "azure";
     if (voice === undefined || voice === null || voice.trim() === '') return;
     if (script === undefined || script === null || script.trim() === '') return;
     
+    console.log('ok');
     // template error messages
     var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
-    var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Please continue to submit your video request to be reviewed by customer services.";
+    var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Therefore, sorry it cannot be downloaded. Please request the file from Customer Services.";
 
 
     // call audio preview api
@@ -67,7 +68,10 @@ async function download_speech(voice_api_provider, voice_provider, voice, script
         if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
             let signed_url = response_json.signed_url;
             let download_name = new URL(signed_url).pathname.split('/').pop();
-            await download_url(signed_url, download_name);
+            //await download_url(signed_url, download_name);
+            ele.removeAttribute("onclick");
+            ele.href = signed_url;
+            ele.click();
             return;
         }
 
@@ -211,7 +215,7 @@ function insert_video_html(index, row) {
                             <div>
                                 <h2 class="t-16-bold-cap">Script</h2>
                                 <p id="script" class="p-template">${row.script}</p>
-                                <a onclick="download_speech('${row.voice_api_provider}','${row.voice_provider}','${row.voice}','${row.script}'); return false;" href="#">Download Audio</a>
+                                <a download target="_blank" onclick="download_speech(this, '${row.voice_api_provider}','${row.voice_provider}','${row.voice}','${row.script}'); return false;" href="#">Download Audio</a>
                             </div>
                             <div class="tab-buttons">
                                 <a href="${row.unique_webpage}" class="button w-inline-block">
