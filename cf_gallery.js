@@ -174,7 +174,7 @@ function insert_video_html(index, row) {
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
                                     <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
                                     <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/><br/></div>
-                                    <div><a onclick="set_video_access('${row.video_request_uuid}', ${row.video_access === 'Public' ? 'Public' : 'Private'}); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/><br/></div>
+                                    <div><a onclick="set_video_access('${row.video_request_uuid}', '${row.video_access === 'Public' ? 'Public' : 'Private'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/><br/></div>
                                     <div><a onclick="var prompt_result=prompt('Rename video (#${index})?','${row.video_name}'); rename_video('${row.video_request_uuid}', prompt_result); return false;" href="#">Rename video</a><br/><br/></div>
                                     <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}'); return false;" href="#">Delete Video</a></div>
                                 </div>
