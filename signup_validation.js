@@ -17,7 +17,7 @@
 async function check_email_addr_valid(email_addr, allow_free = false) {
     // returns true if email addr valid
 
-    var url = `https://app-vktictsuea-nw.a.run.app/email_validation/${encodeURIComponent(email_addr)}`;
+    var url = `https://app-vktictsuea-nw.a.run.app/api/v0/email_validation/${encodeURIComponent(email_addr)}`;
 
     let response = await fetch(url, {
         method: 'GET',

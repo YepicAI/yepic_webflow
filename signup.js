@@ -157,29 +157,29 @@ $('a[data-name="form-submit"]').on('click', function () {
 
     if (!formErrors && !formSubmitted) {
         formSubmitted = true;
-        sendRequest();
+        //sendRequest();
     }
 
     return false;
 })
 
-function sendRequest() {
-
-    $.ajax({
-        url: 'https://hook.integromat.com/oudct5x6br3lxu9r7xmvnrfyxyy88rbw',
-        type: 'POST',
-        data: formValues,
-        success: function (res) {
-            if (emailIsNew == true) {
-                $('.forms').hide();
-                $('.form-step-2').hide();
-                $('.form-step-3').show();
-            } else if (emailIsNew == false) {
-                $('.forms').hide();
-                $('.form-step-2').hide();
-                $('.form-step-3b').show();
-            }
-        },
-        error: function (err) {},
-    });
-}
+// function sendRequest() {
+//
+//     $.ajax({
+//         url: 'https://hook.integromat.com/oudct5x6br3lxu9r7xmvnrfyxyy88rbw',
+//         type: 'POST',
+//         data: formValues,
+//         success: function (res) {
+//             if (emailIsNew == true) {
+//                 $('.forms').hide();
+//                 $('.form-step-2').hide();
+//                 $('.form-step-3').show();
+//             } else if (emailIsNew == false) {
+//                 $('.forms').hide();
+//                 $('.form-step-2').hide();
+//                 $('.form-step-3b').show();
+//             }
+//         },
+//         error: function (err) {},
+//     });
+// }

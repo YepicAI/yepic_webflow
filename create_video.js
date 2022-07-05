@@ -321,66 +321,66 @@ function InitializeActorPositionAndTypeSelection() {
   video_request_model.avatar_position = actorTypePositionSelection.fullBody;
 }
 
-async function isEmailVerified(id) {
-  let result;
-  var data = {
-    user_id: id
-  }
-  console.log("user id: " + id)
-  try {
-    result = await $.ajax({
-      url: "https://hook.integromat.com/" + "l9zpmiqwiliash3j77wb7urvmlonuv4h",
-      type: 'POST',
-      data: data
-    });
-    console.log("Is user verified?: ");
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.log("Error while getting data to integromat: ");
-    console.error(error);
-  }
-}
+// async function isEmailVerified(id) {
+//   let result;
+//   var data = {
+//     user_id: id
+//   }
+//   console.log("user id: " + id)
+//   try {
+//     result = await $.ajax({
+//       url: "https://hook.integromat.com/" + "l9zpmiqwiliash3j77wb7urvmlonuv4h",
+//       type: 'POST',
+//       data: data
+//     });
+//     console.log("Is user verified?: ");
+//     console.log(result);
+//     return result;
+//   } catch (error) {
+//     console.log("Error while getting data to integromat: ");
+//     console.error(error);
+//   }
+// }
 
-function reSendEmailVerification() {
-  let result;
-  var data = {
-    user_id: memberstack_member.id
-  }
-  console.log("user id: " + memberstack_member.id)
-  try {
-    result = $.ajax({
-      url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
-      type: 'POST',
-      data: data
-    });
-    console.log("Verification email resent");
-    return result;
-  } catch (error) {
-    console.log("Error while re-sending verification email");
-    console.error(error);
-  }
-}
+// function reSendEmailVerification() {
+//   let result;
+//   var data = {
+//     user_id: memberstack_member.id
+//   }
+//   console.log("user id: " + memberstack_member.id)
+//   try {
+//     result = $.ajax({
+//       url: "https://hook.integromat.com/" + "ubqms8wkb0xo67gwkjpo18m7qhcwmeqh",
+//       type: 'POST',
+//       data: data
+//     });
+//     console.log("Verification email resent");
+//     return result;
+//   } catch (error) {
+//     console.log("Error while re-sending verification email");
+//     console.error(error);
+//   }
+// }
 
-$(".popup-email-verify-buttons").on("click", function () {
-  reSendEmailVerification();
-  $("#cv-verify-email-popup").css("display", "none");
-});
+// $(".popup-email-verify-buttons").on("click", function () {
+//   //reSendEmailVerification();
+//   $("#cv-verify-email-popup").css("display", "none");
+// });
 
-async function InitializeIsUserVerified() {
-  const response = await isEmailVerified(memberstack_member.id);
-  const is_email_verified_json = JSON.parse(response);
-  if (!is_email_verified_json.is_email_verified) {
-    $(".form-create-button-denied-wrap").css("display", "block");
-    $("#cv-verify-email-popup").css("display", "block");
-    $(".form-listen-denied-wrap").css("display", "block");
+// async function InitializeIsUserVerified() {
+//   const response = await isEmailVerified(memberstack_member.id);
+//   const is_email_verified_json = JSON.parse(response);
+//   if (!is_email_verified_json.is_email_verified) {
+//     $(".form-create-button-denied-wrap").css("display", "block");
+//     $("#cv-verify-email-popup").css("display", "block");
+//     $(".form-listen-denied-wrap").css("display", "block");
 
-    $(".form-create-button-denied-wrap").on("click", function () {
-      $("#cv-verify-email-popup").css("display", "block");
-      $("#cv-verify-email-popup").css("opacity", "");
-    });
-  }
-}
+//     $(".form-create-button-denied-wrap").on("click", function () {
+//       $("#cv-verify-email-popup").css("display", "block");
+//       $("#cv-verify-email-popup").css("opacity", "");
+//     });
+//   }
+// }
 
 function initializeTextCounterVariable() {
   textCounterVariable = 4000;
@@ -408,7 +408,7 @@ function startUpSelection() {
   InitializeActorPositionAndTypeSelection();
   InitializeSelections();
   cleanUpVoiceSelectionBasedOnActorGender('actor-male');
-  InitializeIsUserVerified();
+  //InitializeIsUserVerified();
   notify_audio_error_reset();
 }
 setTimeout(startUpSelection, 1000);
@@ -605,8 +605,8 @@ async function loadListenPreview() {
   }
 
   // call audio preview api
-  //var url = 'http://127.0.0.1:5000/tts_request';
-  var url = 'https://app-vktictsuea-nw.a.run.app/tts_request';
+  //var url = 'http://127.0.0.1:5000/api/v0/speech';
+  var url = 'https://app-vktictsuea-nw.a.run.app/api/v0/speech';
   var moderator_blocked = false;
 
   try {
@@ -788,8 +788,8 @@ async function submit_video_request_data(data) {
   submitted = true;
   console.log(video_request_model);
 
-  //var url = 'http://127.0.0.1:5000/video_request';
-  var url = 'https://app-vktictsuea-nw.a.run.app/video_request';
+  //var url = 'http://127.0.0.1:5000/api/v0/videos';
+  var url = 'https://app-vktictsuea-nw.a.run.app/api/v0/videos';
 
   try {
     let response = await fetch(url, {

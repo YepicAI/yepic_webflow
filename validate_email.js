@@ -24,29 +24,29 @@ jQuery(document).ready(function($){
         return false;
     }
     
-    function send_data() {
-      let result;
-      var data = {
-        custom_id: user.id
-      }
-      console.log("user id: " + user.id)
-      try {
-          result = $.ajax({
-              url: "https://hook.integromat.com/" + "51lp3k11p566j8q3s7a8v22q4tx29the",
-              type: 'POST',
-              data: data
-          });
-          console.log("Data successfully posted");
-          return result;
-      } catch (error) {
-          console.log("Error while getting posting data to integromat: ");
-          console.error(error);
-      }
-    }
+    // function send_data() {
+    //   let result;
+    //   var data = {
+    //     custom_id: user.id
+    //   }
+    //   console.log("user id: " + user.id)
+    //   try {
+    //       result = $.ajax({
+    //           url: "https://hook.integromat.com/" + "51lp3k11p566j8q3s7a8v22q4tx29the",
+    //           type: 'POST',
+    //           data: data
+    //       });
+    //       console.log("Data successfully posted");
+    //       return result;
+    //   } catch (error) {
+    //       console.log("Error while getting posting data to integromat: ");
+    //       console.error(error);
+    //   }
+    // }
     
     function verify_email(){
         var custom_id = getUrlParameter('id');
-        send_data();
+        //send_data();
         console.log("Email is verified");
     }
     setTimeout(verify_email, 1000);

@@ -46,10 +46,11 @@ async function get_video_gallery() {
     var urlParams = new URLSearchParams(window.location.search);
     var recordID = urlParams.get('record_id');
 
-    var url = `https://app-vktictsuea-nw.a.run.app/video_preview/${recordID}`;
+    // var url = `https://app-vktictsuea-nw.a.run.app/video_preview/${recordID}`;
+    var url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${recordID}`;
 
     let response = await fetch(url, {
-        method: 'POST',
+        method: 'GET',
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + MemberStack.getToken(),

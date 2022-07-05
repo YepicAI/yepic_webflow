@@ -75,10 +75,10 @@ function insert_video_html(index, row) {
 }
 
 async function get_video_gallery() {
-    let url = 'https://app-vktictsuea-nw.a.run.app/video_gallery/';
+    let url = 'https://app-vktictsuea-nw.a.run.app/api/v0/videos';
     
     let response = await fetch(url, {
-        method: 'POST',
+        method: 'GET',
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + MemberStack.getToken(),
@@ -100,11 +100,10 @@ async function delete_video(video_request_uuid) {
     let token = MemberStack.getToken();
     if (token === undefined || token === null || token === '') return;
 
-    let url = `https://app-vktictsuea-nw.a.run.app/delete_video_request/${video_request_uuid}`;
-    //let url = `http://127.0.0.1:5000/delete_video_request/${video_request_uuid}`;
+    let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
     
     let response = await fetch(url, {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
