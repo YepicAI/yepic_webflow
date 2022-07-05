@@ -168,14 +168,14 @@ function insert_video_html(index, row) {
                             <div class="t-16-bold-cap">Details</div>
                             <div class="properties-wrap">
                                 <div class="margin-bottom margin-s">
-                                    <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/><br/></div>
-                                    <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/><br/></div>
-                                    <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/><br/></div>
-                                    <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
-                                    <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
-                                    <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/><br/></div>
-                                    <div><a onclick="set_video_access('${row.video_request_uuid}', '${row.video_access === 'Public' ? 'Public' : 'Private'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/><br/></div>
-                                    <div><a onclick="var prompt_result=prompt('Rename video (#${index})?','${row.video_name}'); rename_video('${row.video_request_uuid}', prompt_result); return false;" href="#">Rename video</a><br/><br/></div>
+                                    <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/></div>
+                                    <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
+                                    <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/></div>
+                                    <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
+                                    <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/></div>
+                                    <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/></div>
+                                    <div><a onclick="set_video_access('${row.video_request_uuid}', '${row.video_access === 'Public' ? 'Public' : 'Private'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/></div>
+                                    <div><a onclick="var prompt_result=prompt('Rename video (#${index})?','${row.video_name}'); rename_video('${row.video_request_uuid}', prompt_result); return false;" href="#">Rename video</a><br/></div>
                                     <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}'); return false;" href="#">Delete Video</a></div>
                                 </div>
                             </div>
