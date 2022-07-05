@@ -16,9 +16,74 @@ function title_case(str) {
     );
 }
 
+async function download_url(url, filename) {
+    await fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        })
+        .catch(console.error);
+}
+
+async function download_speech(voice_api_provider, voice_provider, voice, script) {
+
+    if (voice_api_provider === undefined || voice_api_provider === null || voice_api_provider.trim() === '') voice_api_provider = "aflorithmic";
+    if (voice_provider === undefined || voice_provider === null || voice_provider.trim() === '') voice_provider = "azure";
+    if (voice === undefined || voice === null || voice.trim() === '') return;
+    if (script === undefined || script === null || script.trim() === '') return;
+    
+    // template error messages
+    var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
+    var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Please continue to submit your video request to be reviewed by customer services.";
+
+
+    // call audio preview api
+    //var url = 'http://127.0.0.1:5000/api/v0/speech';
+    var url = 'https://app-vktictsuea-nw.a.run.app/api/v0/speech';
+    var moderator_blocked = false;
+
+    try {
+        let response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                "voice_api_provider":voice_api_provider,
+                "voice_provider":voice_provider,
+                "voice":voice,
+                "script":script,
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${MemberStack.getToken()}`,
+            },
+        });
+
+        let response_json = await response.json();
+
+        console.log(response_json);
+
+        if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
+            let signed_url = response_json.signed_url;
+            let download_name = new URL(signed_url).pathname.split('/').pop();
+            await download_url(signed_url, download_name);
+            return;
+        }
+
+        moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
+    }
+    catch (error) {
+        console.log(error);
+    }
+
+    // this only executes if there was an error
+    alert(moderator_blocked ? error_moderation : error_connection);
+}
+
 async function get_video_gallery() {
     let url = 'https://app-vktictsuea-nw.a.run.app/api/v0/videos';
-    
+
     let response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -43,7 +108,7 @@ async function rename_video(video_request_uuid, video_name) {
     if (token === undefined || token === null || token === '') return;
 
     let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
-    
+
     let response = await fetch(url, {
         method: 'PATCH',
         headers: {
@@ -70,7 +135,7 @@ async function set_video_access(video_request_uuid, video_access) {
     if (token === undefined || token === null || token === '') return;
 
     let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
-    
+
     let response = await fetch(url, {
         method: 'PATCH',
         headers: {
@@ -95,7 +160,7 @@ async function delete_video(video_request_uuid) {
     if (token === undefined || token === null || token === '') return;
 
     let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
-    
+
     let response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -146,6 +211,7 @@ function insert_video_html(index, row) {
                             <div>
                                 <h2 class="t-16-bold-cap">Script</h2>
                                 <p id="script" class="p-template">${row.script}</p>
+                                <a onclick="download_speech('${row.voice_api_provider}','${row.voice_provider}','${row.voice}','${row.script}'); return false;" href="#">Download Audio</a>
                             </div>
                             <div class="tab-buttons">
                                 <a href="${row.unique_webpage}" class="button w-inline-block">
@@ -199,7 +265,7 @@ window.addEventListener("load", async (e) => {
 
     button_load.addEventListener("click", async (e) => {
         if (disable_load_click) return;
-        
+
         disable_load_click = true;
         await insert_video_html_batch();
         disable_load_click = false;
