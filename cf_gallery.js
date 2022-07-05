@@ -170,7 +170,8 @@ function insert_video_html(index, row) {
                                 <div class="margin-bottom margin-s">
                                     <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/></div>
                                     <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
-                                    <div class="t-preview-var">Date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/></div>
+                                    <div class="t-preview-var">Date: ${new Date(Date.parse(row.date_created)).toLocaleDateString()}<br/></div>
+                                    <div class="t-preview-var">Time: ${new Date(Date.parse(row.date_created)).toLocaleTimeString()}<br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
                                     <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/></div>
                                     <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/></div>
