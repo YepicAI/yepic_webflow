@@ -50,9 +50,9 @@ async function rename_video(video_request_uuid, video_name) {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         },
-        body: {
+        body: JSON.stringify({
             "video_name": video_name
-        }
+        })
     });
 
     var result = await response.json();
