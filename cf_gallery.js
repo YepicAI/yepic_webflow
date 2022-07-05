@@ -16,6 +16,89 @@ function title_case(str) {
     );
 }
 
+async function get_video_gallery() {
+    let url = 'https://app-vktictsuea-nw.a.run.app/api/v0/videos';
+    
+    let response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + MemberStack.getToken(),
+        },
+    });
+
+    var result = await response.json();
+
+    if (result.status !== 'success' && result.response_status !== 'success') return;
+
+    video_gallery_result = result;
+
+    await insert_video_html_batch();
+}
+
+async function rename_video(video_request_uuid, video_name) {
+    if (video_request_uuid === undefined || video_request_uuid === null || video_request_uuid === '') return;
+    if (video_name === undefined || video_name === null || video_name === '') return;
+    let token = MemberStack.getToken();
+    if (token === undefined || token === null || token === '') return;
+
+    let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
+    
+    let response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: {
+            "video_name": video_name
+        }
+    });
+
+    var result = await response.json();
+
+    if (result.status !== 'success' && result.response_status !== 'success') return;
+
+    window.location.reload();
+}
+
+async function delete_video(video_request_uuid) {
+    if (video_request_uuid === undefined || video_request_uuid === null || video_request_uuid === '') return;
+    let token = MemberStack.getToken();
+    if (token === undefined || token === null || token === '') return;
+
+    let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
+    
+    let response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    var result = await response.json();
+
+    if (result.status !== 'success' && result.response_status !== 'success') return;
+
+    window.location.reload();
+}
+
+async function insert_video_html_batch() {
+    buffer_size = 5;
+
+    for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + buffer_size; index++) {
+        insert_video_html(video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
+    }
+
+    gallery_video_index += buffer_size;
+
+    if (gallery_video_index >= video_gallery_result.video_gallery.length) {
+        var button_load = document.getElementById('button-load');
+        button_load.style.display = "none";
+    }
+}
+
 function insert_video_html(index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != "";
     const del_msg = `Delete video #${index}?\\nTitle: ${row.video_name}\\n`;
@@ -63,6 +146,7 @@ function insert_video_html(index, row) {
                                     <div class="t-preview-var">Creation date: ${new Date(Date.parse(row.date_created)).toLocaleString()}<br/><br/></div>
                                     <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/><br/></div>
                                     <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/><br/></div>
+                                    <div><a onclick="var prompt_result=prompt('Rename video (#${index})?','${row.video_name}'); rename_video('${row.video_request_uuid}', prompt_result); return false;" href="#">Rename video</a><br/><br/></div>
                                     <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}'); return false;" href="#">Delete Video</a></div>
                                 </div>
                             </div>
@@ -72,64 +156,6 @@ function insert_video_html(index, row) {
     `;
     let html_template_string = $.parseHTML(html_template)
     $("#myvideolist").append(html_template_string);
-}
-
-async function get_video_gallery() {
-    let url = 'https://app-vktictsuea-nw.a.run.app/api/v0/videos';
-    
-    let response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + MemberStack.getToken(),
-        },
-    });
-
-    var result = await response.json();
-
-    if (result.status !== 'success' && result.response_status !== 'success') return;
-
-    video_gallery_result = result;
-
-    await insert_video_html_batch();
-}
-
-
-async function delete_video(video_request_uuid) {
-    if (video_request_uuid === undefined || video_request_uuid === null || video_request_uuid === '') return;
-    let token = MemberStack.getToken();
-    if (token === undefined || token === null || token === '') return;
-
-    let url = `https://app-vktictsuea-nw.a.run.app/api/v0/videos/${video_request_uuid}`;
-    
-    let response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-    });
-
-    var result = await response.json();
-
-    if (result.status !== 'success' && result.response_status !== 'success') return;
-
-    window.location.reload();
-}
-
-async function insert_video_html_batch() {
-    buffer_size = 5;
-
-    for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + buffer_size; index++) {
-        insert_video_html(video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
-    }
-
-    gallery_video_index += buffer_size;
-
-    if (gallery_video_index >= video_gallery_result.video_gallery.length) {
-        var button_load = document.getElementById('button-load');
-        button_load.style.display = "none";
-    }
 }
 
 var video_gallery_result = [];
