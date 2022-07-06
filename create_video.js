@@ -305,7 +305,7 @@ $("#background-selection2").on("click", "#customBackground", function () {
 
 // ---------------------- INITIALIZE -------------------------
 function InitializeSelections() {
-  $("[data-actor='"+video_request_model.actor+"']").css(borderCss);
+  $("[data-actor='" + video_request_model.actor + "']").css(borderCss);
   $("[data-background='office-background-FHD.png']").css(borderCss);
   $($($(".preview-bg")[0])[0]).css({
     backgroundImage: defaultBackground,
@@ -577,17 +577,15 @@ async function loadListenPreview() {
   // template error messages
   var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
   var error_moderation = "Content moderation system has flagged the script as potentially unacceptable. Please continue to submit your video request to be reviewed by customer services.";
-  var error_voice      = "Please select a voice";
-  var error_script     = "Please provide a script";
+  var error_voice = "Please select a voice";
+  var error_script = "Please provide a script";
 
   // check parameters
-  if (is_empty(video_request_model.voice_api_provider) || is_empty(video_request_model.voice_provider) || is_empty(video_request_model.voice))
-  {
+  if (is_empty(video_request_model.voice_api_provider) || is_empty(video_request_model.voice_provider) || is_empty(video_request_model.voice)) {
 
   }
 
-  if (is_empty(video_request_model.script))
-  {
+  if (is_empty(video_request_model.script)) {
 
   }
 
@@ -1011,4 +1009,33 @@ $("#deleteBackground").on("click", function () {
     opacity: 1,
   });
   video_request_model.voice = '';
+});
+
+
+window.addEventListener('load', function () {
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+  
+  if (params.includes('video_name'))
+  {
+    document.querySelector("#video-name").value = params.video_name;
+  }
+
+  if (params.includes('script'))
+  {
+    document.querySelector("#video-script").value = params.script;
+  }
+  
+  if (params.includes('actor'))
+  {
+    let x = document.querySelector('[data-actor="'+params.actor+'"]');
+    if (x !== undefined) x.click();
+  }
+
+  if (params.includes('voice'))
+  {
+    let x = document.querySelector('[data-voice="'+params.voice+'"]');
+    if (x !== undefined) x.click();
+  }
 });

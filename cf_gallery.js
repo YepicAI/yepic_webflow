@@ -202,10 +202,10 @@ async function insert_video_html_batch() {
 
 function video_query_string(row)
 {
-    let items = ['avatar', 'voice', 'voice_provider', 'voice_api_provider', 'script', 'video_name'];
+    let items = ['current_video_most_recent', 'unique_webpage', 'watermarked', 'video_request_uuid', 'download_url', 'date_created', 'date_modified', 'background_url', 'azure_translated_script', 'azure_transliterated_script', 'audio_composite', 'create_video', 'script_approval', 'video_access', 'transparency_type'];
 
     var queryString = Object.keys(row).map((key) => {
-        if (items.includes(key))
+        if (!items.includes(key))
         {
             return encodeURIComponent(key) + '=' + encodeURIComponent(row[key])
         }
