@@ -209,7 +209,7 @@ function video_query_string(row)
         {
             return encodeURIComponent(key) + '=' + encodeURIComponent(row[key])
         }
-    }).join('&');
+    }).filter((a)=>a).join('&');
 
     return queryString;
 }
