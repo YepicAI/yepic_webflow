@@ -200,6 +200,20 @@ async function insert_video_html_batch() {
     }
 }
 
+function video_query_string()
+{
+    let items = ['avatar', 'voice', 'voice_provider', 'voice_api_provider', 'script', 'video_name'];
+
+    var queryString = Object.keys(params).map((key) => {
+        if (items.includes(key))
+        {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+        }
+    }).join('&');
+
+    return queryString;
+}
+
 function insert_video_html(index, reverse_index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != "";
     const del_msg = `Delete video #${reverse_index}?\\nTitle: ${row.video_name}\\n`;
@@ -226,7 +240,7 @@ function insert_video_html(index, reverse_index, row) {
                                     <a href=${JSON.stringify(row.unique_webpage)} class="button w-inline-block">
                                         <div>Preview</div>
                                     </a>
-                                    <a href="#" class="button-light unavailable w-inline-block">
+                                    <a href="createvideo?avatar=${video_query_string(row)}" class="button-light unavailable w-inline-block">
                                         <div>Edit</div>
                                     </a>
                                     <a href=${JSON.stringify(row.download_url)} class="button button-gallery-share w-inline-block">
