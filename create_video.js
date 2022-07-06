@@ -1011,29 +1011,28 @@ $("#deleteBackground").on("click", function () {
   video_request_model.voice = '';
 });
 
-
 window.addEventListener('load', function () {
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
   
-  if (params.includes('video_name'))
+  if (!is_empty(params.video_name))
   {
     document.querySelector("#video-name").value = params.video_name;
   }
 
-  if (params.includes('script'))
+  if (!is_empty(params.script))
   {
     document.querySelector("#video-script").value = params.script;
   }
   
-  if (params.includes('actor'))
+  if (!is_empty(params.actor))
   {
     let x = document.querySelector('[data-actor="'+params.actor+'"]');
     if (x !== undefined) x.click();
   }
 
-  if (params.includes('voice'))
+  if (!is_empty(params.voice))
   {
     let x = document.querySelector('[data-voice="'+params.voice+'"]');
     if (x !== undefined) x.click();
