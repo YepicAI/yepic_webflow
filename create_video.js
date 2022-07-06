@@ -1029,12 +1029,12 @@ window.addEventListener('load', function () {
   if (!is_empty(params.actor))
   {
     let x = document.querySelector('[data-actor="'+params.actor+'"]');
-    if (x !== undefined) x.click();
+    if (x !== undefined && x !== null) x.click();
   }
 
   if (!is_empty(params.voice))
   {
     let x = document.querySelector('[data-voice="'+params.voice+'"]');
-    if (x !== undefined) x.click();
+    if (x !== undefined && x !== null) x.click();
   }
 });
