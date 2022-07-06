@@ -6,6 +6,10 @@ MemberStack.onReady.then(function (member) {
     user.membershipTypeId = $memberstack.membership.status;
 });
 
+var video_gallery_result = [];
+var gallery_video_index = 0;
+var disable_load_click = false;
+
 function title_case(str) {
     if (str === undefined || str === null || str === '') return '';
     return str.replace(
@@ -185,7 +189,7 @@ async function insert_video_html_batch() {
     buffer_size = 5;
 
     for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + buffer_size; index++) {
-        insert_video_html(video_gallery_result, index, video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
+        insert_video_html(index, video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
     }
 
     gallery_video_index += buffer_size;
@@ -196,7 +200,7 @@ async function insert_video_html_batch() {
     }
 }
 
-function insert_video_html(video_gallery_result, index, reverse_index, row) {
+function insert_video_html(index, reverse_index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != "";
     const del_msg = `Delete video #${reverse_index}?\\nTitle: ${row.video_name}\\n`;
     const html_template = `
@@ -258,10 +262,6 @@ function insert_video_html(video_gallery_result, index, reverse_index, row) {
     let html_template_string = $.parseHTML(html_template)
     $("#myvideolist").append(html_template_string);
 }
-
-var video_gallery_result = [];
-var gallery_video_index = 0;
-var disable_load_click = false;
 
 window.addEventListener("load", async (e) => {
     await get_video_gallery();
