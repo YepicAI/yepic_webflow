@@ -220,7 +220,7 @@ function insert_video_html(index, reverse_index, row) {
                                 <div>
                                     <h2 class="t-16-bold-cap">Script</h2>
                                     <p id="script" class="p-template">${row.script}</p>
-                                    <a download target="_blank" onclick="var index=${index}; download_speech(this, video_gallery_result[index].voice_api_provider,video_gallery_result[index].voice_provider,video_gallery_result[index].voice,video_gallery_result[index].script); return false;" href="#">Download Audio (Beta)</a>
+                                    <a download target="_blank" onclick="var index=${index}; download_speech(this, video_gallery_result.video_gallery[index].voice_api_provider,video_gallery_result.video_gallery[index].voice_provider,video_gallery_result.video_gallery[index].voice,video_gallery_result.video_gallery[index].script); return false;" href="#">Download Audio (Beta)</a>
                                 </div>
                                 <div class="tab-buttons">
                                     <a href=${JSON.stringify(row.unique_webpage)} class="button w-inline-block">
@@ -250,9 +250,9 @@ function insert_video_html(index, reverse_index, row) {
                                         <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
                                         <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/></div>
                                         <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/></div>
-                                        <div><a onclick="var index=${index}; set_video_access(video_gallery_result[index].video_request_uuid, '${row.video_access === 'Public' ? 'Private' : 'Public'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/></div>
-                                        <div><a onclick="var index=${index}; var prompt_result=prompt('Rename video (#${reverse_index})?',video_gallery_result[index].video_name); rename_video(video_gallery_result[index].video_request_uuid, prompt_result); return false;" href="#">Rename video</a><br/></div>
-                                        <div><a onclick="var index=${index}; if (confirm('${del_msg}')) delete_video(video_gallery_result[index].video_request_uuid); return false;" href="#">Delete Video</a></div>
+                                        <div><a onclick="var index=${index}; set_video_access(video_gallery_result.video_gallery[index].video_request_uuid, '${row.video_access === 'Public' ? 'Private' : 'Public'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/></div>
+                                        <div><a onclick="var index=${index}; var prompt_result=prompt('Rename video (#${reverse_index})?',video_gallery_result.video_gallery[index].video_name); rename_video(video_gallery_result.video_gallery[index].video_request_uuid, prompt_result); return false;" href="#">Rename video</a><br/></div>
+                                        <div><a onclick="var index=${index}; if (confirm('${del_msg}')) delete_video(video_gallery_result.video_gallery[index].video_request_uuid); return false;" href="#">Delete Video</a></div>
                                     </div>
                                 </div>
                             </div>
