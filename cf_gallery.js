@@ -66,6 +66,7 @@ async function download_speech(ele, voice_api_provider, voice_provider, voice, s
         console.log(response_json);
 
         if (response_json.signed_url !== null && response_json.signed_url !== undefined && response_json.signed_url.trim() !== '') {
+            ele
             let signed_url = response_json.signed_url;
             let download_name = new URL(signed_url).pathname.split('/').pop();
             //await download_url(signed_url, download_name);
@@ -184,7 +185,7 @@ async function insert_video_html_batch() {
     buffer_size = 5;
 
     for (var index = gallery_video_index; index < video_gallery_result.video_gallery.length && index < gallery_video_index + buffer_size; index++) {
-        insert_video_html(video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
+        insert_video_html(video_gallery_result, index, video_gallery_result.video_gallery.length - index, video_gallery_result.video_gallery[index]);
     }
 
     gallery_video_index += buffer_size;
@@ -195,63 +196,63 @@ async function insert_video_html_batch() {
     }
 }
 
-function insert_video_html(index, row) {
+function insert_video_html(video_gallery_result, index, reverse_index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != "";
-    const del_msg = `Delete video #${index}?\\nTitle: ${row.video_name}\\n`;
+    const del_msg = `Delete video #${reverse_index}?\\nTitle: ${row.video_name}\\n`;
     const html_template = `
                     <div class="video-item">
-                    <div class="gallery-video-left">
-                        <div class="video-preview">
-                            <video controls>
-                                <source src="${row.current_video_most_recent}">
-                            </video>
-                            <div class="eye-wrap"></div>
-                        </div>
-                        <div class="display-flex dir-vert justify-sb">
-                            <div>
-                                <h2 class="t-16-bold-cap">Video Title (#${index})</h2>
-                                <p id="videoName" class="p-template">${row.video_name}</p>
+                        <div class="gallery-video-left">
+                            <div class="video-preview">
+                                <video controls>
+                                    <source src="${row.current_video_most_recent}">
+                                </video>
+                                <div class="eye-wrap"></div>
                             </div>
-                            <div>
-                                <h2 class="t-16-bold-cap">Script</h2>
-                                <p id="script" class="p-template">${row.script}</p>
-                                <a download target="_blank" onclick="download_speech(this, '${row.voice_api_provider}','${row.voice_provider}','${row.voice}','${row.script}'); return false;" href="#">Download Audio (Beta)</a>
-                            </div>
-                            <div class="tab-buttons">
-                                <a href="${row.unique_webpage}" class="button w-inline-block">
-                                    <div>Preview</div>
-                                </a>
-                                <a href="#" class="button-light unavailable w-inline-block">
-                                    <div>Edit</div>
-                                </a>
-                                <a href="${row.download_url}" class="button button-gallery-share w-inline-block">
-                                    <div class="w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="19.079" height="19.079">
-                                            <path d="m9.54 13.779 5.3-6.36h-3.18V0H7.42v7.419H4.24Zm-7.419 3.18v-8.48H.001v8.479a2.126 2.126 0 0 0 2.12 2.12h14.838a2.126 2.126 0 0 0 2.12-2.119v-8.48h-2.12v8.479Z" fill="currentColor"></path>
-                                        </svg></div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="gallery-video-right">
-                        <div class="separator-vidgallery display-none-tab"></div>
-                        <div class="display-flex dir-vert _w-100">
-                            <div class="t-16-bold-cap">Details</div>
-                            <div class="properties-wrap">
-                                <div class="margin-bottom margin-s">
-                                    <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/></div>
-                                    <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
-                                    <div class="t-preview-var">Date: ${new Date(Date.parse(row.date_created)).toLocaleDateString()}<br/></div>
-                                    <div class="t-preview-var">Time: ${new Date(Date.parse(row.date_created)).toLocaleTimeString()}<br/></div>
-                                    <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
-                                    <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/></div>
-                                    <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/></div>
-                                    <div><a onclick="set_video_access('${row.video_request_uuid}', '${row.video_access === 'Public' ? 'Private' : 'Public'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/></div>
-                                    <div><a onclick="var prompt_result=prompt('Rename video (#${index})?','${row.video_name}'); rename_video('${row.video_request_uuid}', prompt_result); return false;" href="#">Rename video</a><br/></div>
-                                    <div><a onclick="if (confirm('${del_msg}')) delete_video('${row.video_request_uuid}'); return false;" href="#">Delete Video</a></div>
+                            <div class="display-flex dir-vert justify-sb">
+                                <div>
+                                    <h2 class="t-16-bold-cap">Video Title (#${reverse_index})</h2>
+                                    <p id="videoName" class="p-template">${row.video_name}</p>
+                                </div>
+                                <div>
+                                    <h2 class="t-16-bold-cap">Script</h2>
+                                    <p id="script" class="p-template">${row.script}</p>
+                                    <a download target="_blank" onclick="download_speech(this, video_gallery_result[index].voice_api_provider,video_gallery_result[index].voice_provider,video_gallery_result[index].voice,video_gallery_result[index].script); return false;" href="#">Download Audio (Beta)</a>
+                                </div>
+                                <div class="tab-buttons">
+                                    <a href=${JSON.stringify(row.unique_webpage)} class="button w-inline-block">
+                                        <div>Preview</div>
+                                    </a>
+                                    <a href="#" class="button-light unavailable w-inline-block">
+                                        <div>Edit</div>
+                                    </a>
+                                    <a href=${JSON.stringify(row.download_url)} class="button button-gallery-share w-inline-block">
+                                        <div class="w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="19.079" height="19.079">
+                                                <path d="m9.54 13.779 5.3-6.36h-3.18V0H7.42v7.419H4.24Zm-7.419 3.18v-8.48H.001v8.479a2.126 2.126 0 0 0 2.12 2.12h14.838a2.126 2.126 0 0 0 2.12-2.119v-8.48h-2.12v8.479Z" fill="currentColor"></path>
+                                            </svg></div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="gallery-video-right">
+                            <div class="separator-vidgallery display-none-tab"></div>
+                            <div class="display-flex dir-vert _w-100">
+                                <div class="t-16-bold-cap">Details</div>
+                                <div class="properties-wrap">
+                                    <div class="margin-bottom margin-s">
+                                        <div class="t-preview-var">Avatar: ${title_case(row.actor)}<br/></div>
+                                        <div class="t-preview-var">Voice: ${title_case(row.voice_provider)} ${title_case(row.voice)}<br/></div>
+                                        <div class="t-preview-var">Date: ${new Date(Date.parse(row.date_created)).toLocaleDateString()}<br/></div>
+                                        <div class="t-preview-var">Time: ${new Date(Date.parse(row.date_created)).toLocaleTimeString()}<br/></div>
+                                        <div>Production status: ${video_ready ? "Ready" : "Queued"}<br/></div>
+                                        <div>Moderation status: ${row.script_approval ? "Accepted" : "Marked for moderation"}<br/></div>
+                                        <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/></div>
+                                        <div><a onclick="set_video_access(video_gallery_result[index].video_request_uuid, '${row.video_access === 'Public' ? 'Private' : 'Public'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/></div>
+                                        <div><a onclick="var prompt_result=prompt('Rename video (#${reverse_index})?',video_gallery_result[index].video_name); rename_video(video_gallery_result[index].video_request_uuid, prompt_result); return false;" href="#">Rename video</a><br/></div>
+                                        <div><a onclick="if (confirm('${del_msg}')) delete_video(video_gallery_result[index].video_request_uuid); return false;" href="#">Delete Video</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
     `;
     let html_template_string = $.parseHTML(html_template)
