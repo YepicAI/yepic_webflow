@@ -240,7 +240,7 @@ function insert_video_html(index, reverse_index, row) {
                                     <a href=${JSON.stringify(row.unique_webpage)} class="button w-inline-block">
                                         <div>Preview</div>
                                     </a>
-                                    <a target="_blank" href="createvideo?avatar=${video_query_string(row)}" class="button-light unavailable w-inline-block">
+                                    <a target="_blank" href="createvideo?${video_query_string(row)}" class="button-light unavailable w-inline-block">
                                         <div>Edit</div>
                                     </a>
                                     <a href=${JSON.stringify(row.download_url)} class="button button-gallery-share w-inline-block">
