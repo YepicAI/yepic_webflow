@@ -252,7 +252,7 @@ function insert_video_html(index, reverse_index, row) {
                                         <div>Video Preview Page: ${row.video_access === 'Public' ? 'Public' : 'Private'}</a><br/></div>
                                         <div><a onclick="var index=${index}; set_video_access(video_gallery_result.video_gallery[index].video_request_uuid, '${row.video_access === 'Public' ? 'Private' : 'Public'}'); return false;" href="#">Make ${row.video_access === 'Public' ? "Private" : "Public"}</a><br/></div>
                                         <div><a onclick="var index=${index}; var prompt_result=prompt('Rename video (#${reverse_index})?',video_gallery_result.video_gallery[index].video_name); rename_video(video_gallery_result.video_gallery[index].video_request_uuid, prompt_result); return false;" href="#">Rename video</a><br/></div>
-                                        <div><a onclick="var index=${index}; if (confirm('${del_msg}')) delete_video(video_gallery_result.video_gallery[index].video_request_uuid); return false;" href="#">Delete Video</a></div>
+                                        <div><a onclick="var index=${index}; if (confirm('Delete video #${reverse_index}?')) delete_video(video_gallery_result.video_gallery[index].video_request_uuid); return false;" href="#">Delete Video</a></div>
                                     </div>
                                 </div>
                             </div>
