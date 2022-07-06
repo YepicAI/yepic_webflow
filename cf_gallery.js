@@ -200,14 +200,14 @@ async function insert_video_html_batch() {
     }
 }
 
-function video_query_string()
+function video_query_string(row)
 {
     let items = ['avatar', 'voice', 'voice_provider', 'voice_api_provider', 'script', 'video_name'];
 
-    var queryString = Object.keys(params).map((key) => {
+    var queryString = Object.keys(row).map((key) => {
         if (items.includes(key))
         {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+            return encodeURIComponent(key) + '=' + encodeURIComponent(row[key])
         }
     }).join('&');
 
