@@ -234,7 +234,7 @@ function insert_video_html(index, reverse_index, row) {
                                     <p id="videoName" class="p-template">${row.video_name}</p>
                                 </div>
                                 <div>
-                                    <h2 class="t-16-bold-cap">${!is_empty(row.script) ? 'Script' : 'Script not applicable - voiceover video'}</h2>
+                                    <h2 class="t-16-bold-cap">${!is_empty(row.script) ? 'Script' : 'Voiceover video'}</h2>
                                     <p id="script" class="p-template">${row.script}</p>
 `;
 
@@ -243,7 +243,9 @@ function insert_video_html(index, reverse_index, row) {
                                     <a download target="_blank" onclick="var index=${index}; download_speech(this, video_gallery_result.video_gallery[index].voice_api_provider,video_gallery_result.video_gallery[index].voice_provider,video_gallery_result.video_gallery[index].voice,video_gallery_result.video_gallery[index].script); return false;" href="#">Download Generated Audio (Beta)</a>
 `;
     } else {
-
+        html_template += `                                                                
+                                    <p></p>
+`;
     }
 
     html_template += `                                                                
