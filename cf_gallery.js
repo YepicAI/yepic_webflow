@@ -10,6 +10,10 @@ var video_gallery_result = [];
 var gallery_video_index = 0;
 var disable_load_click = false;
 
+function is_empty(value) {
+    return (value === undefined || value === null || value === '' || String(value).trim().length === 0);
+}
+
 function title_case(str) {
     if (str === undefined || str === null || str === '') return '';
     return str.replace(
@@ -38,7 +42,7 @@ async function download_speech(ele, voice_api_provider, voice_provider, voice, s
     if (voice_provider === undefined || voice_provider === null || voice_provider.trim() === '') voice_provider = "azure";
     if (voice === undefined || voice === null || voice.trim() === '') return;
     if (script === undefined || script === null || script.trim() === '') return;
-    
+
     console.log('ok');
     // template error messages
     var error_connection = "Connection problem. Please try again or contact support. Sorry for the inconvenience.";
@@ -54,10 +58,10 @@ async function download_speech(ele, voice_api_provider, voice_provider, voice, s
         let response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
-                "voice_api_provider":voice_api_provider,
-                "voice_provider":voice_provider,
-                "voice":voice,
-                "script":script,
+                "voice_api_provider": voice_api_provider,
+                "voice_provider": voice_provider,
+                "voice": voice,
+                "script": script,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -200,16 +204,14 @@ async function insert_video_html_batch() {
     }
 }
 
-function video_query_string(row)
-{
+function video_query_string(row) {
     let items = ['current_video_most_recent', 'unique_webpage', 'watermarked', 'video_request_uuid', 'download_url', 'date_created', 'date_modified', 'background_url', 'azure_translated_script', 'azure_transliterated_script', 'audio_composite', 'create_video', 'script_approval', 'video_access', 'transparency_type'];
 
     var queryString = Object.keys(row).map((key) => {
-        if (!items.includes(key))
-        {
+        if (!items.includes(key)) {
             return encodeURIComponent(key) + '=' + encodeURIComponent(row[key])
         }
-    }).filter((a)=>a).join('&');
+    }).filter((a) => a).join('&');
 
     return queryString;
 }
@@ -217,7 +219,7 @@ function video_query_string(row)
 function insert_video_html(index, reverse_index, row) {
     var video_ready = row.current_video_most_recent !== undefined && row.current_video_most_recent !== null && row.current_video_most_recent.trim() != "";
     const del_msg = `Delete video #${reverse_index}?\\nTitle: ${row.video_name}\\n`;
-    const html_template = `
+    let html_template = `
                     <div class="video-item">
                         <div class="gallery-video-left">
                             <div class="video-preview">
@@ -234,8 +236,16 @@ function insert_video_html(index, reverse_index, row) {
                                 <div>
                                     <h2 class="t-16-bold-cap">Script</h2>
                                     <p id="script" class="p-template">${row.script}</p>
+`;
+
+    if (!is_empty(row.script) && is_empty(row.custom_audio_file)) {
+        html_template += `                                                                
                                     <a download target="_blank" onclick="var index=${index}; download_speech(this, video_gallery_result.video_gallery[index].voice_api_provider,video_gallery_result.video_gallery[index].voice_provider,video_gallery_result.video_gallery[index].voice,video_gallery_result.video_gallery[index].script); return false;" href="#">Download Audio (Beta)</a>
-                                </div>
+`;
+    }
+
+    html_template += `                                                                
+                                </div>            
                                 <div class="tab-buttons">
                                     <a href=${JSON.stringify(row.unique_webpage)} class="button w-inline-block">
                                         <div>Preview</div>
