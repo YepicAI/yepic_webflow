@@ -234,14 +234,16 @@ function insert_video_html(index, reverse_index, row) {
                                     <p id="videoName" class="p-template">${row.video_name}</p>
                                 </div>
                                 <div>
-                                    <h2 class="t-16-bold-cap">Script</h2>
+                                    <h2 class="t-16-bold-cap">${!is_empty(row.script) ? 'Script' : 'Script not applicable - voiceover video'}</h2>
                                     <p id="script" class="p-template">${row.script}</p>
 `;
 
     if (!is_empty(row.script) && is_empty(row.custom_audio_file)) {
         html_template += `                                                                
-                                    <a download target="_blank" onclick="var index=${index}; download_speech(this, video_gallery_result.video_gallery[index].voice_api_provider,video_gallery_result.video_gallery[index].voice_provider,video_gallery_result.video_gallery[index].voice,video_gallery_result.video_gallery[index].script); return false;" href="#">Download Audio (Beta)</a>
+                                    <a download target="_blank" onclick="var index=${index}; download_speech(this, video_gallery_result.video_gallery[index].voice_api_provider,video_gallery_result.video_gallery[index].voice_provider,video_gallery_result.video_gallery[index].voice,video_gallery_result.video_gallery[index].script); return false;" href="#">Download Generated Audio (Beta)</a>
 `;
+    } else {
+
     }
 
     html_template += `                                                                
