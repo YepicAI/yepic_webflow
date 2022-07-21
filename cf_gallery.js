@@ -84,7 +84,8 @@ async function download_speech(ele, voice_api_provider, voice_provider, voice, s
             return;
         }
 
-        moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
+        //moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
+        moderator_blocked = response_json?.status?.message === "content moderator error" || response_json?.status?.message === "content not accepted";
     }
     catch (error) {
         console.log(error);
@@ -107,7 +108,7 @@ async function get_video_gallery() {
 
     var result = await response.json();
 
-    if (result.status !== 'success' && result.response_status !== 'success') return;
+    if (result?.status?.success !== 'success') return;
 
     video_gallery_result = result;
 
@@ -135,7 +136,7 @@ async function rename_video(video_request_uuid, video_name) {
 
     var result = await response.json();
 
-    if (result.status !== 'success' && result.response_status !== 'success') return;
+    if (result?.status?.success !== 'success') return;
 
     window.location.reload();
 }
@@ -162,7 +163,7 @@ async function set_video_access(video_request_uuid, video_access) {
 
     var result = await response.json();
 
-    if (result.status !== 'success' && result.response_status !== 'success') return;
+    if (result?.status?.success !== 'success') return;
 
     window.location.reload();
 }
@@ -184,7 +185,7 @@ async function delete_video(video_request_uuid) {
 
     var result = await response.json();
 
-    if (result.status !== 'success' && result.response_status !== 'success') return;
+    if (result?.status?.success !== 'success') return;
 
     window.location.reload();
 }

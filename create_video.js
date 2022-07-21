@@ -628,8 +628,8 @@ async function loadListenPreview() {
       audioElement.play();
       return;
     }
-
-    moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
+    //moderator_blocked = response_json.response_status_message === "content moderator error" || response_json.response_status_message === "content not accepted";
+    moderator_blocked = response_json?.status?.message === "content moderator error" || response_json?.status?.message === "content not accepted";
   }
   catch (error) {
     console.log(error);
@@ -1015,28 +1015,24 @@ window.addEventListener('load', function () {
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
-  
-  if (!is_empty(params.video_name))
-  {
+
+  if (!is_empty(params.video_name)) {
     let x = document.querySelector("#video-name");
     if (x !== undefined && x !== null) x.value = params.video_name;
   }
 
-  if (!is_empty(params.script))
-  {
+  if (!is_empty(params.script)) {
     let x = document.querySelector("#video-script");
     if (x !== undefined && x !== null) x.value = params.script;
   }
-  
-  if (!is_empty(params.actor))
-  {
-    let x = document.querySelector('[data-actor="'+params.actor+'" i]');
+
+  if (!is_empty(params.actor)) {
+    let x = document.querySelector('[data-actor="' + params.actor + '" i]');
     if (x !== undefined && x !== null) x.click();
   }
 
-  if (!is_empty(params.voice))
-  {
-    let x = document.querySelector('[data-voice="'+params.voice+'" i]');
+  if (!is_empty(params.voice)) {
+    let x = document.querySelector('[data-voice="' + params.voice + '" i]');
     if (x !== undefined && x !== null) x.click();
   }
 });

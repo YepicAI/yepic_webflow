@@ -159,7 +159,7 @@ async function set_submit_click_events() {
             }        
             else
             {
-                alert("Form error: " + result.response_status_message);
+                alert("Form error: " + result?.status?.message);
             }
         }
         catch (err) {

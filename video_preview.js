@@ -59,7 +59,7 @@ async function get_video_gallery() {
 
     var result = await response.json();
 
-    if (result.status !== 'success' && result.response_status !== 'success') return;
+    if (result?.status?.success !== 'success') return;
 
     video_gallery_result = result;
 
